@@ -16,6 +16,35 @@ A fast CLI tool to render Markdown files beautifully in the terminal, with full 
 
 ## Installation
 
+### Quick Install (recommended)
+
+```bash
+curl -fsSL https://raw.githubusercontent.com/tzachbon/mdview/main/install.sh | sh
+```
+
+This automatically detects your platform and installs the latest version to `/usr/local/bin`.
+
+**Options:**
+```bash
+# Install to custom directory
+curl -fsSL https://raw.githubusercontent.com/tzachbon/mdview/main/install.sh | sh -s -- -b ~/.local/bin
+
+# Install specific version
+curl -fsSL https://raw.githubusercontent.com/tzachbon/mdview/main/install.sh | sh -s -- -v v1.0.0
+```
+
+### Manual Download
+
+Download the appropriate binary for your platform from [Releases](https://github.com/tzachbon/mdview/releases):
+
+| Platform | Binary |
+|----------|--------|
+| macOS (Apple Silicon) | `mdview-darwin-arm64` |
+| macOS (Intel) | `mdview-darwin-x64` |
+| Linux (x64) | `mdview-linux-x64` |
+| Linux (ARM64) | `mdview-linux-arm64` |
+| Windows (x64) | `mdview-windows-x64.exe` |
+
 ### From Source
 
 Requires [Bun](https://bun.sh) v1.0 or later.
