@@ -87,7 +87,7 @@ Focus: Validate marked-terminal + beautiful-mermaid work together end-to-end.
 
 ## Phase 3: Testing
 
-- [ ] 3.1 Add mermaid unit tests
+- [x] 3.1 Add mermaid unit tests
   - **Do**: Create src/mermaid.test.ts testing valid mermaid, invalid mermaid, edge cases
   - **Files**: `/Users/zachbonfil/projects/private/mdview/src/mermaid.test.ts`
   - **Done when**: Tests cover success path, error path, empty input
