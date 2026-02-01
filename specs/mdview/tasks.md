@@ -12,7 +12,7 @@ generated: auto
 
 Focus: Validate marked-terminal + beautiful-mermaid work together end-to-end.
 
-- [ ] 1.1 Initialize project with Bun
+- [x] 1.1 Initialize project with Bun
   - **Do**: Create package.json with dependencies, tsconfig.json with strict mode
   - **Files**: `/Users/zachbonfil/projects/private/mdview/package.json`, `/Users/zachbonfil/projects/private/mdview/tsconfig.json`
   - **Done when**: `bun install` succeeds, TypeScript compiles
