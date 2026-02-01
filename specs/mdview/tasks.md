@@ -47,7 +47,7 @@ Focus: Validate marked-terminal + beautiful-mermaid work together end-to-end.
   - _Requirements: FR-5, FR-6, FR-7, FR-8, FR-9, FR-10_
   - _Design: src/index.ts_
 
-- [ ] 1.5 Create test markdown file
+- [x] 1.5 Create test markdown file
   - **Do**: Create examples/test.md with headers, bold, italic, code blocks, table, mermaid diagram
   - **Files**: `/Users/zachbonfil/projects/private/mdview/examples/test.md`
   - **Done when**: File contains all markdown elements from PROMPT.md
