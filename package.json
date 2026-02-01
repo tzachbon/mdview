@@ -1,6 +1,6 @@
 {
   "name": "mdview",
-  "version": "1.0.0",
+  "version": "1.1.0",
   "type": "module",
   "description": "CLI tool for rendering Markdown files in the terminal with Mermaid diagram support",
   "main": "src/index.ts",
