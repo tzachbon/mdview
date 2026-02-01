@@ -24,27 +24,76 @@ EXAMPLES:
   echo "# Hello" | mdview -
 `.trim();
 
-async function main(): Promise<void> {
-  // Parse args: Bun.argv is [bun, script, ...args]
-  const args = Bun.argv.slice(2);
+/**
+ * Parsed CLI arguments
+ */
+export interface ParsedArgs {
+  showHelp: boolean;
+  showVersion: boolean;
+  file: string | null;
+  useStdin: boolean;
+}
+
+/**
+ * Parse CLI arguments into structured form
+ * Pure function - no side effects, fully testable
+ */
+export function parseArgs(args: string[]): ParsedArgs {
+  const result: ParsedArgs = {
+    showHelp: false,
+    showVersion: false,
+    file: null,
+    useStdin: false,
+  };
 
   if (args.length === 0) {
+    return result;
+  }
+
+  const arg = args[0] as string;
+
+  // Handle --help / -h
+  if (arg === "--help" || arg === "-h") {
+    result.showHelp = true;
+    return result;
+  }
+
+  // Handle --version / -v
+  if (arg === "--version" || arg === "-v") {
+    result.showVersion = true;
+    return result;
+  }
+
+  // Handle stdin
+  if (arg === "-") {
+    result.useStdin = true;
+    return result;
+  }
+
+  // Handle file input
+  result.file = arg;
+  return result;
+}
+
+async function main(): Promise<void> {
+  // Parse args: Bun.argv is [bun, script, ...args]
+  const args = parseArgs(Bun.argv.slice(2));
+
+  if (!args.showHelp && !args.showVersion && !args.file && !args.useStdin) {
     console.error("Error: No input file specified");
     console.error("Usage: mdview <file> or mdview - for stdin");
     console.error("Run 'mdview --help' for more information");
     process.exit(1);
   }
 
-  const arg = args[0] as string; // Safe: length check above guarantees this
-
   // Handle --help / -h
-  if (arg === "--help" || arg === "-h") {
+  if (args.showHelp) {
     console.log(HELP);
     return;
   }
 
   // Handle --version / -v
-  if (arg === "--version" || arg === "-v") {
+  if (args.showVersion) {
     console.log(`mdview v${VERSION}`);
     return;
   }
@@ -52,7 +101,7 @@ async function main(): Promise<void> {
   let markdown: string;
 
   // Handle stdin
-  if (arg === "-") {
+  if (args.useStdin) {
     try {
       markdown = await Bun.stdin.text();
     } catch (err) {
@@ -61,7 +110,7 @@ async function main(): Promise<void> {
     }
   } else {
     // Handle file input
-    const filePath: string = arg;
+    const filePath = args.file as string; // Safe: checked above
     const file = Bun.file(filePath);
 
     // Check if file exists

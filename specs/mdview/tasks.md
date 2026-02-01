@@ -70,7 +70,7 @@ Focus: Validate marked-terminal + beautiful-mermaid work together end-to-end.
   - **Commit**: `refactor: add strict TypeScript types`
   - _Design: Interfaces_
 
-- [ ] 2.2 Extract CLI argument parsing
+- [x] 2.2 Extract CLI argument parsing
   - **Do**: Create parseArgs function with clear return type, handle all flag combinations
   - **Files**: `/Users/zachbonfil/projects/private/mdview/src/index.ts`
   - **Done when**: Arg parsing is testable pure function
