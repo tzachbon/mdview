@@ -20,7 +20,7 @@ Focus: Validate marked-terminal + beautiful-mermaid work together end-to-end.
   - **Commit**: `chore: initialize bun project with dependencies`
   - _Requirements: FR-1, FR-3_
 
-- [ ] 1.2 Create basic mermaid renderer
+- [x] 1.2 Create basic mermaid renderer
   - **Do**: Create src/mermaid.ts with renderMermaid function using beautiful-mermaid, include error fallback
   - **Files**: `/Users/zachbonfil/projects/private/mdview/src/mermaid.ts`
   - **Done when**: Function exports, handles both valid and invalid mermaid
