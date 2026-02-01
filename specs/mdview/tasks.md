@@ -38,7 +38,7 @@ Focus: Validate marked-terminal + beautiful-mermaid work together end-to-end.
   - _Requirements: FR-1, FR-2, FR-11_
   - _Design: src/renderer.ts_
 
-- [ ] 1.4 Create CLI entry point
+- [x] 1.4 Create CLI entry point
   - **Do**: Create src/index.ts with arg parsing, file reading, stdin support, help/version
   - **Files**: `/Users/zachbonfil/projects/private/mdview/src/index.ts`
   - **Done when**: CLI handles file, stdin, --help, --version, errors
