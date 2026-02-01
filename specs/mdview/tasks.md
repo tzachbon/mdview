@@ -135,13 +135,13 @@ Focus: Validate marked-terminal + beautiful-mermaid work together end-to-end.
   - **Commit**: (no commit needed, verification only)
   - _Requirements: NFR-1_
 
-- [ ] 4.3 Run full quality check
+- [x] 4.3 Run full quality check
   - **Do**: Run type check, tests, verify no errors
   - **Verify**: `bun tsc --noEmit && bun test`
   - **Done when**: All checks pass
   - **Commit**: `fix: address any remaining issues` (if needed)
 
-- [ ] 4.4 Create PR and verify CI
+- [x] 4.4 Create PR and verify CI
   - **Do**: Push branch, create PR with gh CLI, verify all checks pass
   - **Verify**: `gh pr create && gh pr checks --watch`
   - **Done when**: PR created, ready for review
