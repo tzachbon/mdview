@@ -1,0 +1,5 @@
+specs/.current-spec
+**/.progress.md
+**/.ralph-state.json
+node_modules/
+mdview

@@ -120,7 +120,7 @@ Focus: Validate marked-terminal + beautiful-mermaid work together end-to-end.
 
 ## Phase 4: Quality Gates
 
-- [ ] 4.1 Add build script for binary
+- [x] 4.1 Add build script for binary
   - **Do**: Add build script to package.json, verify binary works
   - **Files**: `/Users/zachbonfil/projects/private/mdview/package.json`
   - **Done when**: `bun run build` creates working mdview binary
