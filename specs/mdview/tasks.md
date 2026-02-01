@@ -29,7 +29,7 @@ Focus: Validate marked-terminal + beautiful-mermaid work together end-to-end.
   - _Requirements: FR-3, FR-4_
   - _Design: src/mermaid.ts_
 
-- [ ] 1.3 Create markdown renderer with mermaid detection
+- [x] 1.3 Create markdown renderer with mermaid detection
   - **Do**: Create src/renderer.ts with render function, detect mermaid blocks via regex, integrate marked-terminal
   - **Files**: `/Users/zachbonfil/projects/private/mdview/src/renderer.ts`
   - **Done when**: render() accepts markdown string, returns styled output, mermaid blocks converted
