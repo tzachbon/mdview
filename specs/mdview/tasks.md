@@ -95,7 +95,7 @@ Focus: Validate marked-terminal + beautiful-mermaid work together end-to-end.
   - **Commit**: `test(mermaid): add unit tests`
   - _Requirements: AC-2.2, AC-2.3_
 
-- [ ] 3.2 Add renderer unit tests
+- [x] 3.2 Add renderer unit tests
   - **Do**: Create src/renderer.test.ts testing markdown rendering, mermaid detection, width option
   - **Files**: `/Users/zachbonfil/projects/private/mdview/src/renderer.test.ts`
   - **Done when**: Tests cover plain markdown, mermaid blocks, mixed content
