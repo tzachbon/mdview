@@ -103,7 +103,7 @@ Focus: Validate marked-terminal + beautiful-mermaid work together end-to-end.
   - **Commit**: `test(renderer): add unit tests`
   - _Requirements: AC-1.1, AC-2.1_
 
-- [ ] 3.3 Add CLI integration tests
+- [x] 3.3 Add CLI integration tests
   - **Do**: Create src/index.test.ts testing file reading, stdin, help, version, errors
   - **Files**: `/Users/zachbonfil/projects/private/mdview/src/index.test.ts`
   - **Done when**: Tests cover all CLI argument combinations

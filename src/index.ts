@@ -162,7 +162,10 @@ async function main(): Promise<void> {
   console.log(output);
 }
 
-main().catch((err: unknown) => {
-  const message = err instanceof Error ? err.message : String(err);
-  exitWithError(ErrorType.UNEXPECTED_ERROR, message);
-});
+// Only run main when executed directly, not when imported for testing
+if (import.meta.main) {
+  main().catch((err: unknown) => {
+    const message = err instanceof Error ? err.message : String(err);
+    exitWithError(ErrorType.UNEXPECTED_ERROR, message);
+  });
+}
