@@ -128,7 +128,7 @@ Focus: Validate marked-terminal + beautiful-mermaid work together end-to-end.
   - **Commit**: `build: add compile script for standalone binary`
   - _Requirements: FR-12_
 
-- [ ] 4.2 Verify performance target
+- [x] 4.2 Verify performance target
   - **Do**: Time binary startup, ensure <50ms
   - **Verify**: `time ./mdview --version`
   - **Done when**: Startup time <50ms

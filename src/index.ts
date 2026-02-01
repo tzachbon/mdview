@@ -3,8 +3,6 @@
  * mdview CLI - Render Markdown files in the terminal with Mermaid support
  */
 
-import { render } from "./renderer.js";
-
 /**
  * Error types for consistent error handling
  */
@@ -38,9 +36,8 @@ function exitWithError(type: ErrorType, detail?: string): never {
   process.exit(1);
 }
 
-// Read version from package.json
-const pkg = await import("../package.json");
-const VERSION = pkg.version;
+// Version is inlined for fast --version response
+const VERSION = "1.0.0";
 
 const HELP = `
 mdview - Render Markdown in the terminal with Mermaid diagram support
@@ -157,7 +154,8 @@ async function main(): Promise<void> {
     }
   }
 
-  // Render and output
+  // Render and output - lazy load renderer to keep --version fast
+  const { render } = await import("./renderer.js");
   const output = render(markdown);
   console.log(output);
 }
