@@ -111,7 +111,7 @@ Focus: Validate marked-terminal + beautiful-mermaid work together end-to-end.
   - **Commit**: `test(cli): add integration tests`
   - _Requirements: AC-3.1, AC-4.1, AC-4.3, AC-5.1_
 
-- [ ] 3.4 Verify test coverage
+- [x] 3.4 Verify test coverage
   - **Do**: Run all tests, ensure coverage meets NFR-3 (>80%)
   - **Verify**: `bun test --coverage`
   - **Done when**: All tests pass, coverage >80%

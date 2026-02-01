@@ -8,7 +8,7 @@ import { render } from "./renderer.js";
 /**
  * Error types for consistent error handling
  */
-enum ErrorType {
+export enum ErrorType {
   NO_INPUT = "NO_INPUT",
   FILE_NOT_FOUND = "FILE_NOT_FOUND",
   FILE_READ_ERROR = "FILE_READ_ERROR",
@@ -19,7 +19,7 @@ enum ErrorType {
 /**
  * Format error message with consistent prefix
  */
-function formatError(type: ErrorType, detail?: string): string {
+export function formatError(type: ErrorType, detail?: string): string {
   const messages: Record<ErrorType, string> = {
     [ErrorType.NO_INPUT]: "no input file specified",
     [ErrorType.FILE_NOT_FOUND]: `file not found: ${detail}`,

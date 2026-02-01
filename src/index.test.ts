@@ -2,7 +2,39 @@
  * Integration tests for CLI (index.ts)
  */
 import { describe, test, expect } from "bun:test";
-import { parseArgs, type ParsedArgs } from "./index";
+import { parseArgs, formatError, ErrorType, type ParsedArgs } from "./index";
+
+describe("formatError", () => {
+  test("NO_INPUT returns error message", () => {
+    const result = formatError(ErrorType.NO_INPUT);
+    expect(result).toBe("mdview: error: no input file specified");
+  });
+
+  test("FILE_NOT_FOUND returns error with filename", () => {
+    const result = formatError(ErrorType.FILE_NOT_FOUND, "missing.md");
+    expect(result).toBe("mdview: error: file not found: missing.md");
+  });
+
+  test("FILE_READ_ERROR returns error with filename", () => {
+    const result = formatError(ErrorType.FILE_READ_ERROR, "unreadable.md");
+    expect(result).toBe("mdview: error: failed to read file: unreadable.md");
+  });
+
+  test("STDIN_READ_ERROR returns error message", () => {
+    const result = formatError(ErrorType.STDIN_READ_ERROR);
+    expect(result).toBe("mdview: error: failed to read from stdin");
+  });
+
+  test("UNEXPECTED_ERROR returns custom message", () => {
+    const result = formatError(ErrorType.UNEXPECTED_ERROR, "something went wrong");
+    expect(result).toBe("mdview: error: something went wrong");
+  });
+
+  test("UNEXPECTED_ERROR without detail returns default", () => {
+    const result = formatError(ErrorType.UNEXPECTED_ERROR);
+    expect(result).toBe("mdview: error: an unexpected error occurred");
+  });
+});
 
 describe("parseArgs", () => {
   describe("help flag", () => {
