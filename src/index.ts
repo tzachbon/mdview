@@ -5,6 +5,39 @@
 
 import { render } from "./renderer.js";
 
+/**
+ * Error types for consistent error handling
+ */
+enum ErrorType {
+  NO_INPUT = "NO_INPUT",
+  FILE_NOT_FOUND = "FILE_NOT_FOUND",
+  FILE_READ_ERROR = "FILE_READ_ERROR",
+  STDIN_READ_ERROR = "STDIN_READ_ERROR",
+  UNEXPECTED_ERROR = "UNEXPECTED_ERROR",
+}
+
+/**
+ * Format error message with consistent prefix
+ */
+function formatError(type: ErrorType, detail?: string): string {
+  const messages: Record<ErrorType, string> = {
+    [ErrorType.NO_INPUT]: "no input file specified",
+    [ErrorType.FILE_NOT_FOUND]: `file not found: ${detail}`,
+    [ErrorType.FILE_READ_ERROR]: `failed to read file: ${detail}`,
+    [ErrorType.STDIN_READ_ERROR]: "failed to read from stdin",
+    [ErrorType.UNEXPECTED_ERROR]: detail || "an unexpected error occurred",
+  };
+  return `mdview: error: ${messages[type]}`;
+}
+
+/**
+ * Exit with error message and code 1
+ */
+function exitWithError(type: ErrorType, detail?: string): never {
+  console.error(formatError(type, detail));
+  process.exit(1);
+}
+
 // Read version from package.json
 const pkg = await import("../package.json");
 const VERSION = pkg.version;
@@ -80,7 +113,7 @@ async function main(): Promise<void> {
   const args = parseArgs(Bun.argv.slice(2));
 
   if (!args.showHelp && !args.showVersion && !args.file && !args.useStdin) {
-    console.error("Error: No input file specified");
+    console.error(formatError(ErrorType.NO_INPUT));
     console.error("Usage: mdview <file> or mdview - for stdin");
     console.error("Run 'mdview --help' for more information");
     process.exit(1);
@@ -104,9 +137,8 @@ async function main(): Promise<void> {
   if (args.useStdin) {
     try {
       markdown = await Bun.stdin.text();
-    } catch (err) {
-      console.error("Error: Failed to read from stdin");
-      process.exit(1);
+    } catch {
+      exitWithError(ErrorType.STDIN_READ_ERROR);
     }
   } else {
     // Handle file input
@@ -115,15 +147,13 @@ async function main(): Promise<void> {
 
     // Check if file exists
     if (!(await file.exists())) {
-      console.error(`Error: File not found: ${filePath}`);
-      process.exit(1);
+      exitWithError(ErrorType.FILE_NOT_FOUND, filePath);
     }
 
     try {
       markdown = await file.text();
-    } catch (err) {
-      console.error(`Error: Failed to read file: ${filePath}`);
-      process.exit(1);
+    } catch {
+      exitWithError(ErrorType.FILE_READ_ERROR, filePath);
     }
   }
 
@@ -132,7 +162,7 @@ async function main(): Promise<void> {
   console.log(output);
 }
 
-main().catch((err) => {
-  console.error("Error:", err.message || err);
-  process.exit(1);
+main().catch((err: unknown) => {
+  const message = err instanceof Error ? err.message : String(err);
+  exitWithError(ErrorType.UNEXPECTED_ERROR, message);
 });

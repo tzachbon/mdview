@@ -77,7 +77,7 @@ Focus: Validate marked-terminal + beautiful-mermaid work together end-to-end.
   - **Verify**: `bun tsc --noEmit`
   - **Commit**: `refactor(cli): extract argument parsing function`
 
-- [ ] 2.3 Improve error handling
+- [x] 2.3 Improve error handling
   - **Do**: Add specific error types, consistent error messages, proper exit codes
   - **Files**: `/Users/zachbonfil/projects/private/mdview/src/index.ts`
   - **Done when**: All error paths have clear messages and exit 1
