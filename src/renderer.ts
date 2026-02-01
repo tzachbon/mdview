@@ -7,6 +7,14 @@ import { marked, type MarkedExtension } from "marked";
 import { markedTerminal } from "marked-terminal";
 import { renderMermaid } from "./mermaid.js";
 
+/**
+ * Options for rendering markdown
+ */
+export interface RenderOptions {
+  /** Terminal width in characters (defaults to process.stdout.columns or 80) */
+  width?: number;
+}
+
 // Regex to detect mermaid code blocks
 // Matches ```mermaid followed by content until closing ```
 const MERMAID_BLOCK_REGEX = /```mermaid\n([\s\S]*?)```/g;
@@ -16,11 +24,11 @@ const MERMAID_BLOCK_REGEX = /```mermaid\n([\s\S]*?)```/g;
  * Mermaid blocks are converted to ASCII art before rendering
  *
  * @param markdown - Raw markdown string
- * @param width - Terminal width (defaults to process.stdout.columns or 80)
+ * @param options - Render options (width, etc.)
  * @returns Styled string for terminal output
  */
-export function render(markdown: string, width?: number): string {
-  const terminalWidth = width ?? process.stdout.columns ?? 80;
+export function render(markdown: string, options?: RenderOptions): string {
+  const terminalWidth: number = options?.width ?? process.stdout.columns ?? 80;
 
   // Pre-process: Replace mermaid blocks with ASCII art
   const processedMarkdown = markdown.replace(

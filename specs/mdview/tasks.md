@@ -62,7 +62,7 @@ Focus: Validate marked-terminal + beautiful-mermaid work together end-to-end.
 
 ## Phase 2: Refactoring
 
-- [ ] 2.1 Add proper TypeScript types
+- [x] 2.1 Add proper TypeScript types
   - **Do**: Add explicit interfaces for RenderOptions, MermaidResult, ensure strict type checking
   - **Files**: `/Users/zachbonfil/projects/private/mdview/src/renderer.ts`, `/Users/zachbonfil/projects/private/mdview/src/mermaid.ts`
   - **Done when**: No any types, all functions have typed params/returns

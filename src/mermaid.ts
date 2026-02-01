@@ -6,6 +6,16 @@
 import { renderMermaidAscii } from "beautiful-mermaid";
 
 /**
+ * Result of a mermaid rendering operation
+ */
+export interface MermaidResult {
+  /** Whether rendering succeeded */
+  success: boolean;
+  /** ASCII art output or error message */
+  output: string;
+}
+
+/**
  * Renders mermaid diagram code to ASCII art
  * On failure, returns the raw code in a box with error message
  *
