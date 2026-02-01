@@ -54,7 +54,7 @@ Focus: Validate marked-terminal + beautiful-mermaid work together end-to-end.
   - **Verify**: `cat examples/test.md`
   - **Commit**: `docs: add test markdown file`
 
-- [ ] 1.6 POC Checkpoint - Validate end-to-end
+- [x] 1.6 POC Checkpoint - Validate end-to-end
   - **Do**: Run mdview on test file, verify all elements render correctly
   - **Done when**: Headers styled, code highlighted, mermaid shows as ASCII, tables formatted
   - **Verify**: `bun run src/index.ts examples/test.md`
