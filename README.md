@@ -22,16 +22,18 @@ A fast CLI tool to render Markdown files beautifully in the terminal, with full 
 curl -fsSL https://raw.githubusercontent.com/tzachbon/mdview/main/install.sh | sh
 ```
 
-This automatically detects your platform and installs the latest version to `/usr/local/bin`.
+This automatically detects your platform and installs the latest version to `~/.local/bin` (no sudo required).
 
 **Options:**
 ```bash
-# Install to custom directory
-curl -fsSL https://raw.githubusercontent.com/tzachbon/mdview/main/install.sh | sh -s -- -b ~/.local/bin
+# Install to system-wide directory (requires sudo)
+curl -fsSL https://raw.githubusercontent.com/tzachbon/mdview/main/install.sh | sudo sh -s -- -b /usr/local/bin
 
 # Install specific version
 curl -fsSL https://raw.githubusercontent.com/tzachbon/mdview/main/install.sh | sh -s -- -v v1.0.0
 ```
+
+> **Note:** Make sure `~/.local/bin` is in your PATH. Add `export PATH="$HOME/.local/bin:$PATH"` to your shell profile if needed.
 
 ### Manual Download
 
@@ -61,7 +63,7 @@ bun install
 bun run build
 
 # Optionally, move to your PATH
-sudo mv mdview /usr/local/bin/
+mkdir -p ~/.local/bin && mv mdview ~/.local/bin/
 ```
 
 ### Quick Start

@@ -3,7 +3,7 @@
 # Usage: curl -fsSL https://raw.githubusercontent.com/tzachbon/mdview/main/install.sh | sh
 #
 # Options:
-#   -b, --bin-dir DIR   Installation directory (default: /usr/local/bin)
+#   -b, --bin-dir DIR   Installation directory (default: ~/.local/bin)
 #   -v, --version VER   Install specific version (default: latest)
 #   -h, --help          Show this help message
 
@@ -11,7 +11,7 @@ set -e
 
 REPO="tzachbon/mdview"
 BIN_NAME="mdview"
-DEFAULT_BIN_DIR="/usr/local/bin"
+DEFAULT_BIN_DIR="${HOME}/.local/bin"
 
 # Colors for output
 RED='\033[0;31m'
@@ -39,16 +39,16 @@ mdview installer
 Usage: install.sh [OPTIONS]
 
 Options:
-    -b, --bin-dir DIR   Installation directory (default: /usr/local/bin)
+    -b, --bin-dir DIR   Installation directory (default: ~/.local/bin)
     -v, --version VER   Install specific version (default: latest)
     -h, --help          Show this help message
 
 Examples:
-    # Install latest version to /usr/local/bin
+    # Install latest version to ~/.local/bin (no sudo required)
     curl -fsSL https://raw.githubusercontent.com/tzachbon/mdview/main/install.sh | sh
 
-    # Install to custom directory
-    curl -fsSL https://raw.githubusercontent.com/tzachbon/mdview/main/install.sh | sh -s -- -b ~/.local/bin
+    # Install to system-wide directory (requires sudo)
+    curl -fsSL https://raw.githubusercontent.com/tzachbon/mdview/main/install.sh | sudo sh -s -- -b /usr/local/bin
 
     # Install specific version
     curl -fsSL https://raw.githubusercontent.com/tzachbon/mdview/main/install.sh | sh -s -- -v v1.0.0
@@ -148,18 +148,18 @@ install_binary() {
     # Create bin directory if it doesn't exist
     if [ ! -d "$bin_dir" ]; then
         info "Creating directory: $bin_dir"
-        mkdir -p "$bin_dir" 2>/dev/null || sudo mkdir -p "$bin_dir"
+        if ! mkdir -p "$bin_dir" 2>/dev/null; then
+            error "Cannot create directory: $bin_dir (permission denied). Try a different directory with -b or run with sudo."
+        fi
     fi
 
-    # Check if we need sudo
-    if [ -w "$bin_dir" ]; then
-        mv "$src" "$dest"
-        chmod +x "$dest"
-    else
-        info "Requesting sudo access to install to $bin_dir"
-        sudo mv "$src" "$dest"
-        sudo chmod +x "$dest"
+    # Check if we can write to the directory
+    if [ ! -w "$bin_dir" ]; then
+        error "Cannot write to $bin_dir (permission denied). Try a different directory with -b or run with sudo."
     fi
+
+    mv "$src" "$dest"
+    chmod +x "$dest"
 
     info "Installed ${BIN_NAME} to ${dest}"
 }
