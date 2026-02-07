@@ -3,6 +3,26 @@
   "version": "1.1.0",
   "type": "module",
   "description": "CLI tool for rendering Markdown files in the terminal with Mermaid diagram support",
+  "license": "ISC",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/tzachbon/mdview.git"
+  },
+  "homepage": "https://github.com/tzachbon/mdview",
+  "bugs": {
+    "url": "https://github.com/tzachbon/mdview/issues"
+  },
+  "keywords": [
+    "markdown",
+    "terminal",
+    "cli",
+    "mermaid",
+    "ascii",
+    "renderer"
+  ],
+  "engines": {
+    "bun": ">=1.0.0"
+  },
   "main": "src/index.ts",
   "bin": {
     "mdview": "src/index.ts"

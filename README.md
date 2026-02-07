@@ -1,10 +1,19 @@
+<div align="center">
+
 # mdview
 
-A fast CLI tool to render Markdown files beautifully in the terminal, with full support for Mermaid diagrams as ASCII art.
+**Fast CLI tool to render Markdown files beautifully in the terminal, with Mermaid diagram support.**
 
-![Bun](https://img.shields.io/badge/Bun-%23000000.svg?style=flat&logo=bun&logoColor=white)
-![TypeScript](https://img.shields.io/badge/TypeScript-007ACC?style=flat&logo=typescript&logoColor=white)
-![Test Coverage](https://img.shields.io/badge/coverage-82%25-brightgreen)
+[![License: ISC](https://img.shields.io/badge/License-ISC-blue.svg)](https://opensource.org/licenses/ISC)
+[![Bun](https://img.shields.io/badge/Bun-%23000000.svg?style=flat&logo=bun&logoColor=white)](https://bun.sh)
+[![TypeScript](https://img.shields.io/badge/TypeScript-007ACC?style=flat&logo=typescript&logoColor=white)](https://www.typescriptlang.org/)
+[![PRs Welcome](https://img.shields.io/badge/PRs-welcome-brightgreen.svg)](http://makeapullrequest.com)
+
+[Installation](#installation) | [Usage](#usage) | [Mermaid Support](#mermaid-support) | [Contributing](#contributing)
+
+</div>
+
+---
 
 ## Features
 
@@ -200,8 +209,26 @@ bun run build  # Creates binary for current platform
 - **Mermaid**: [beautiful-mermaid](https://github.com/niconiahi/beautiful-mermaid)
 - **Styling**: [chalk](https://github.com/chalk/chalk)
 
+## Contributing
+
+PRs welcome! See [CONTRIBUTING.md](CONTRIBUTING.md) for details.
+
+1. Fork it
+2. Create your feature branch (`git checkout -b feature/amazing`)
+3. Commit your changes
+4. Push to the branch
+5. Open a PR
+
 ## Acknowledgments
 
 - [marked](https://marked.js.org/) for the excellent Markdown parser
 - [marked-terminal](https://github.com/mikaelbr/marked-terminal) for terminal rendering
 - [beautiful-mermaid](https://github.com/niconiahi/beautiful-mermaid) for ASCII diagram conversion
+
+---
+
+<div align="center">
+
+ISC License
+
+</div>
