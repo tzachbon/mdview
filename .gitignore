@@ -3,3 +3,4 @@ specs/.current-spec
 **/.ralph-state.json
 node_modules/
 mdview
+package-lock.json
