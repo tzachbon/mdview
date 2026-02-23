@@ -150,3 +150,44 @@ export function buildBottomBorder(
   }
   return "─".repeat(width);
 }
+
+/**
+ * Decorate rendered content with bat-style header, line numbers, and grid
+ *
+ * Assembles optional components based on style flags:
+ * - header: dimmed "File: filename" line
+ * - numbers: right-aligned line numbers with │ separator
+ * - grid: top/bottom borders using box-drawing characters
+ *
+ * @param content - Rendered markdown content
+ * @param options - Decoration options (filename, width, style flags)
+ * @returns Decorated string ready for terminal output
+ */
+export function decorate(content: string, options: DecorateOptions): string {
+  const { filename, width, style } = options;
+  let lines = content.split("\n");
+
+  const gutter = style.numbers ? gutterWidthFor(lines.length) : 0;
+
+  if (style.numbers) {
+    lines = addLineNumbers(lines, gutter);
+  }
+
+  const parts: string[] = [];
+
+  if (style.header && filename) {
+    parts.push(buildHeader(filename));
+  }
+
+  if (style.grid) {
+    parts.push(buildTopBorder(width, gutter, style.numbers));
+  }
+
+  parts.push(...lines);
+
+  if (style.grid) {
+    parts.push(buildBottomBorder(width, gutter, style.numbers));
+  }
+
+  return parts.join("\n");
+}
