@@ -3,6 +3,8 @@
  * mdview CLI - Render Markdown files in the terminal with Mermaid support
  */
 
+import type { PagingMode } from "./pager.js";
+
 /**
  * Error types for consistent error handling
  */
@@ -62,6 +64,9 @@ export interface ParsedArgs {
   showVersion: boolean;
   file: string | null;
   useStdin: boolean;
+  paging: PagingMode;
+  plain: boolean;
+  style: string | null;
 }
 
 /**
@@ -74,34 +79,59 @@ export function parseArgs(args: string[]): ParsedArgs {
     showVersion: false,
     file: null,
     useStdin: false,
+    paging: "auto",
+    plain: false,
+    style: null,
   };
 
-  if (args.length === 0) {
-    return result;
+  for (let i = 0; i < args.length; i++) {
+    const arg = args[i] as string;
+
+    // Handle --help / -h
+    if (arg === "--help" || arg === "-h") {
+      result.showHelp = true;
+      return result;
+    }
+
+    // Handle --version / -v
+    if (arg === "--version" || arg === "-v") {
+      result.showVersion = true;
+      return result;
+    }
+
+    // Handle --plain / -p
+    if (arg === "--plain" || arg === "-p") {
+      result.plain = true;
+      continue;
+    }
+
+    // Handle --paging=<mode>
+    if (arg.startsWith("--paging=")) {
+      const mode = arg.slice("--paging=".length);
+      if (mode === "never" || mode === "always" || mode === "auto") {
+        result.paging = mode;
+      }
+      continue;
+    }
+
+    // Handle --style=<value>
+    if (arg.startsWith("--style=")) {
+      result.style = arg.slice("--style=".length);
+      continue;
+    }
+
+    // Handle stdin
+    if (arg === "-") {
+      result.useStdin = true;
+      continue;
+    }
+
+    // Handle positional file arg
+    if (!result.file) {
+      result.file = arg;
+    }
   }
 
-  const arg = args[0] as string;
-
-  // Handle --help / -h
-  if (arg === "--help" || arg === "-h") {
-    result.showHelp = true;
-    return result;
-  }
-
-  // Handle --version / -v
-  if (arg === "--version" || arg === "-v") {
-    result.showVersion = true;
-    return result;
-  }
-
-  // Handle stdin
-  if (arg === "-") {
-    result.useStdin = true;
-    return result;
-  }
-
-  // Handle file input
-  result.file = arg;
   return result;
 }
 
