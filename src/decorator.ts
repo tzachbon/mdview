@@ -3,6 +3,9 @@
  * Adds file headers, line numbers, and grid borders to rendered output
  */
 
+import chalk from "chalk";
+import path from "path";
+
 /**
  * Individual style components that can be toggled independently
  */
@@ -67,4 +70,28 @@ export function parseStyle(styleStr: string): StyleComponents {
   }
 
   return result;
+}
+
+/**
+ * Calculate gutter width (number of digits) needed for line count
+ */
+function gutterWidthFor(lineCount: number): number {
+  return Math.max(1, Math.ceil(Math.log10(lineCount + 1)));
+}
+
+/**
+ * Prepend right-aligned, dimmed line numbers with a box-drawing separator
+ *
+ * @param lines - Array of content lines
+ * @param gutterWidth - Number of characters for the line number column
+ * @returns Lines with prepended line numbers
+ */
+export function addLineNumbers(
+  lines: string[],
+  gutterWidth: number,
+): string[] {
+  return lines.map((line, i) => {
+    const num = String(i + 1).padStart(gutterWidth, " ");
+    return `${chalk.dim(num)} │ ${line}`;
+  });
 }
