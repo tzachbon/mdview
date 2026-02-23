@@ -42,7 +42,7 @@ _Design: src/pager.ts pipeToPager implementation_
 **Done when**: Zero type errors, all 63 existing tests pass
 **Commit**: `chore(pager): pass quality checkpoint` (only if fixes needed)
 
-### Task 1.4: Create decorator module -- parseStyle
+### Task 1.4: Create decorator module -- parseStyle [x]
 
 **Do**:
 1. Create `src/decorator.ts` with `StyleComponents` interface and `DecorateOptions` interface
