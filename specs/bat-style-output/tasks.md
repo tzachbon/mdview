@@ -143,7 +143,7 @@ _Design: src/index.ts change 3_
 **Done when**: Zero type errors, all existing tests pass
 **Commit**: `chore(cli): pass quality checkpoint` (only if fixes needed)
 
-### Task 1.12: POC end-to-end validation
+### Task 1.12: POC end-to-end validation [x]
 
 **Do**:
 1. Run `bun run src/index.ts examples/test.md --paging=never` and verify output contains box-drawing chars (│, ─) and "File: test.md"
