@@ -20,7 +20,7 @@ Focus: Get pager + decorations working end-to-end. Skip edge cases, hardcode whe
 _Requirements: FR-1, FR-2, FR-4, AC-1.5, AC-1.6, AC-1.9, AC-1.10, AC-1.11_
 _Design: src/pager.ts_
 
-### Task 1.2: Add pipeToPager to pager module
+### Task 1.2: Add pipeToPager to pager module [x]
 
 **Do**:
 1. Add `pipeToPager(content: string): Promise<void>` to `src/pager.ts`

@@ -43,3 +43,31 @@ export function resolvePagerCommand(): string[] {
 
   return DEFAULT_PAGER;
 }
+
+/**
+ * Pipes content through the resolved pager command
+ * Falls back to writing directly to stdout if the pager cannot be spawned
+ *
+ * @param content - The rendered content to display through the pager
+ */
+export async function pipeToPager(content: string): Promise<void> {
+  const [cmd, ...args] = resolvePagerCommand();
+  if (!cmd) {
+    process.stdout.write(content + "\n");
+    return;
+  }
+
+  try {
+    const proc = Bun.spawn([cmd, ...args], {
+      stdin: "pipe",
+      stdout: "inherit",
+      stderr: "inherit",
+    });
+
+    proc.stdin.write(content);
+    proc.stdin.end();
+    await proc.exited;
+  } catch {
+    process.stdout.write(content + "\n");
+  }
+}
