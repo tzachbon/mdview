@@ -6,7 +6,7 @@
 
 Focus: Get pager + decorations working end-to-end. Skip edge cases, hardcode where convenient.
 
-### Task 1.1: Create pager module -- shouldPage + resolvePagerCommand
+### Task 1.1: Create pager module -- shouldPage + resolvePagerCommand [x]
 
 **Do**:
 1. Create `src/pager.ts` with `PagingMode` type, `shouldPage(mode)`, and `resolvePagerCommand()`
