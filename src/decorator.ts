@@ -95,3 +95,58 @@ export function addLineNumbers(
     return `${chalk.dim(num)} │ ${line}`;
   });
 }
+
+/**
+ * Build a dimmed file header line
+ *
+ * @param filename - Path to the file being displayed
+ * @returns Formatted header string
+ */
+export function buildHeader(filename: string): string {
+  return chalk.dim(`File: ${path.basename(filename)}`);
+}
+
+/**
+ * Build top grid border using box-drawing characters
+ *
+ * @param width - Total border width in characters
+ * @param gutterWidth - Gutter column width (0 if numbers disabled)
+ * @param numbersEnabled - Whether line numbers are shown
+ * @returns Top border string
+ */
+export function buildTopBorder(
+  width: number,
+  gutterWidth: number,
+  numbersEnabled: boolean,
+): string {
+  if (numbersEnabled) {
+    // gutter area + space + junction + space + remaining content
+    const gutterFill = "─".repeat(gutterWidth + 1);
+    const remaining = width - gutterWidth - 4; // -1 space -1 junction -1 space -1 gutter pad
+    const contentFill = "─".repeat(Math.max(0, remaining));
+    return `${gutterFill}┬${contentFill}`;
+  }
+  return "─".repeat(width);
+}
+
+/**
+ * Build bottom grid border using box-drawing characters
+ *
+ * @param width - Total border width in characters
+ * @param gutterWidth - Gutter column width (0 if numbers disabled)
+ * @param numbersEnabled - Whether line numbers are shown
+ * @returns Bottom border string
+ */
+export function buildBottomBorder(
+  width: number,
+  gutterWidth: number,
+  numbersEnabled: boolean,
+): string {
+  if (numbersEnabled) {
+    const gutterFill = "─".repeat(gutterWidth + 1);
+    const remaining = width - gutterWidth - 4;
+    const contentFill = "─".repeat(Math.max(0, remaining));
+    return `${gutterFill}┴${contentFill}`;
+  }
+  return "─".repeat(width);
+}
