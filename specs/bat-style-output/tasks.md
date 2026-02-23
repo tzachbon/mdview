@@ -121,7 +121,7 @@ _Design: src/decorator.ts decorate function_
 _Requirements: FR-4, FR-12, FR-13, AC-1.9, AC-7.1, AC-8.1_
 _Design: src/index.ts changes 1-2_
 
-### Task 1.10: Wire decorator + pager into main() output pipeline
+### Task 1.10: Wire decorator + pager into main() output pipeline [x]
 
 **Do**:
 1. Replace `console.log(output)` at end of `main()` with decoration + pager pipeline

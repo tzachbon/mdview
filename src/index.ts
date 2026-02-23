@@ -184,10 +184,39 @@ async function main(): Promise<void> {
     }
   }
 
-  // Render and output - lazy load renderer to keep --version fast
+  // Render - lazy load renderer to keep --version fast
   const { render } = await import("./renderer.js");
   const output = render(markdown);
-  console.log(output);
+
+  // Determine whether to apply decorations
+  const isTTY = process.stdout.isTTY === true;
+  const noColor = "NO_COLOR" in process.env;
+  const forceColor = "FORCE_COLOR" in process.env;
+  const useDecorations = !args.plain && (isTTY || forceColor) && !noColor;
+
+  // Lazy load decorator and pager
+  const { decorate, parseStyle } = await import("./decorator.js");
+  const { shouldPage, pipeToPager } = await import("./pager.js");
+
+  const style = args.style
+    ? parseStyle(args.style)
+    : args.plain
+      ? { header: false, numbers: false, grid: false }
+      : { header: true, numbers: true, grid: true };
+
+  const decorated = useDecorations
+    ? decorate(output, {
+        filename: args.file ? args.file : undefined,
+        width: process.stdout.columns || 80,
+        style,
+      })
+    : output;
+
+  if (shouldPage(args.paging)) {
+    await pipeToPager(decorated);
+  } else {
+    console.log(decorated);
+  }
 }
 
 // Only run main when executed directly, not when imported for testing
