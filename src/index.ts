@@ -45,15 +45,25 @@ const HELP = `
 mdview - Render Markdown in the terminal with Mermaid diagram support
 
 USAGE:
-  mdview <file>          Render a markdown file
-  mdview -               Read from stdin
-  mdview --help, -h      Show this help message
-  mdview --version, -v   Show version
+  mdview <file>                         Render a markdown file
+  mdview -                              Read from stdin
+  mdview --help, -h                     Show this help message
+  mdview --version, -v                  Show version
+
+OPTIONS:
+  --plain, -p                           Disable all decorations (header, numbers, grid)
+  --paging=<mode>                       Control pager usage: never, always, auto (default)
+  --style=<components>                  Control decoration components
+    Available components: header, numbers, grid
+    Presets: full (all), plain (none)
+    Examples: --style=numbers --style=header,grid
 
 EXAMPLES:
   mdview README.md
+  mdview README.md --style=plain
+  mdview README.md --paging=never
   cat README.md | mdview -
-  echo "# Hello" | mdview -
+  echo "# Hello" | mdview - --plain
 `.trim();
 
 /**
