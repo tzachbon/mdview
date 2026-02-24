@@ -3,6 +3,8 @@
  * mdview CLI - Render Markdown files in the terminal with Mermaid support
  */
 
+import type { PagingMode } from "./pager.js";
+
 /**
  * Error types for consistent error handling
  */
@@ -43,15 +45,25 @@ const HELP = `
 mdview - Render Markdown in the terminal with Mermaid diagram support
 
 USAGE:
-  mdview <file>          Render a markdown file
-  mdview -               Read from stdin
-  mdview --help, -h      Show this help message
-  mdview --version, -v   Show version
+  mdview <file>                         Render a markdown file
+  mdview -                              Read from stdin
+  mdview --help, -h                     Show this help message
+  mdview --version, -v                  Show version
+
+OPTIONS:
+  --plain, -p                           Disable all decorations (header, numbers, grid)
+  --paging=<mode>                       Control pager usage: never, always, auto (default)
+  --style=<components>                  Control decoration components
+    Available components: header, numbers, grid
+    Presets: full (all), plain (none)
+    Examples: --style=numbers --style=header,grid
 
 EXAMPLES:
   mdview README.md
+  mdview README.md --style=plain
+  mdview README.md --paging=never
   cat README.md | mdview -
-  echo "# Hello" | mdview -
+  echo "# Hello" | mdview - --plain
 `.trim();
 
 /**
@@ -62,6 +74,9 @@ export interface ParsedArgs {
   showVersion: boolean;
   file: string | null;
   useStdin: boolean;
+  paging: PagingMode;
+  plain: boolean;
+  style: string | null;
 }
 
 /**
@@ -74,34 +89,59 @@ export function parseArgs(args: string[]): ParsedArgs {
     showVersion: false,
     file: null,
     useStdin: false,
+    paging: "auto",
+    plain: false,
+    style: null,
   };
 
-  if (args.length === 0) {
-    return result;
+  for (let i = 0; i < args.length; i++) {
+    const arg = args[i] as string;
+
+    // Handle --help / -h
+    if (arg === "--help" || arg === "-h") {
+      result.showHelp = true;
+      return result;
+    }
+
+    // Handle --version / -v
+    if (arg === "--version" || arg === "-v") {
+      result.showVersion = true;
+      return result;
+    }
+
+    // Handle --plain / -p
+    if (arg === "--plain" || arg === "-p") {
+      result.plain = true;
+      continue;
+    }
+
+    // Handle --paging=<mode>
+    if (arg.startsWith("--paging=")) {
+      const mode = arg.slice("--paging=".length);
+      if (mode === "never" || mode === "always" || mode === "auto") {
+        result.paging = mode;
+      }
+      continue;
+    }
+
+    // Handle --style=<value>
+    if (arg.startsWith("--style=")) {
+      result.style = arg.slice("--style=".length);
+      continue;
+    }
+
+    // Handle stdin
+    if (arg === "-") {
+      result.useStdin = true;
+      continue;
+    }
+
+    // Handle positional file arg
+    if (!result.file) {
+      result.file = arg;
+    }
   }
 
-  const arg = args[0] as string;
-
-  // Handle --help / -h
-  if (arg === "--help" || arg === "-h") {
-    result.showHelp = true;
-    return result;
-  }
-
-  // Handle --version / -v
-  if (arg === "--version" || arg === "-v") {
-    result.showVersion = true;
-    return result;
-  }
-
-  // Handle stdin
-  if (arg === "-") {
-    result.useStdin = true;
-    return result;
-  }
-
-  // Handle file input
-  result.file = arg;
   return result;
 }
 
@@ -154,10 +194,39 @@ async function main(): Promise<void> {
     }
   }
 
-  // Render and output - lazy load renderer to keep --version fast
+  // Render - lazy load renderer to keep --version fast
   const { render } = await import("./renderer.js");
   const output = render(markdown);
-  console.log(output);
+
+  // Determine whether to apply decorations
+  const isTTY = process.stdout.isTTY === true;
+  const noColor = "NO_COLOR" in process.env;
+  const forceColor = "FORCE_COLOR" in process.env;
+  const useDecorations = !args.plain && (isTTY || forceColor) && !noColor;
+
+  // Lazy load decorator and pager
+  const { decorate, parseStyle } = await import("./decorator.js");
+  const { shouldPage, pipeToPager } = await import("./pager.js");
+
+  const style = args.style
+    ? parseStyle(args.style)
+    : args.plain
+      ? { header: false, numbers: false, grid: false }
+      : { header: true, numbers: true, grid: true };
+
+  const decorated = useDecorations
+    ? decorate(output, {
+        filename: args.file ? args.file : undefined,
+        width: process.stdout.columns || 80,
+        style,
+      })
+    : output;
+
+  if (shouldPage(args.paging)) {
+    await pipeToPager(decorated);
+  } else {
+    console.log(decorated);
+  }
 }
 
 // Only run main when executed directly, not when imported for testing

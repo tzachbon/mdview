@@ -127,6 +127,213 @@ describe("parseArgs", () => {
       expect(result.file).toBe("file1.md");
     });
   });
+
+  describe("--plain flag", () => {
+    test("--plain sets plain to true", () => {
+      const result = parseArgs(["--plain", "file.md"]);
+      expect(result.plain).toBe(true);
+      expect(result.file).toBe("file.md");
+    });
+
+    test("-p sets plain to true", () => {
+      const result = parseArgs(["-p", "file.md"]);
+      expect(result.plain).toBe(true);
+      expect(result.file).toBe("file.md");
+    });
+
+    test("--plain works with stdin", () => {
+      const result = parseArgs(["--plain", "-"]);
+      expect(result.plain).toBe(true);
+      expect(result.useStdin).toBe(true);
+    });
+
+    test("--plain is independent of file argument", () => {
+      const result = parseArgs(["file.md", "--plain"]);
+      expect(result.plain).toBe(true);
+      expect(result.file).toBe("file.md");
+    });
+  });
+
+  describe("--paging flag", () => {
+    test("--paging=never disables paging", () => {
+      const result = parseArgs(["--paging=never", "file.md"]);
+      expect(result.paging).toBe("never");
+      expect(result.file).toBe("file.md");
+    });
+
+    test("--paging=always enables paging", () => {
+      const result = parseArgs(["--paging=always", "file.md"]);
+      expect(result.paging).toBe("always");
+      expect(result.file).toBe("file.md");
+    });
+
+    test("--paging=auto uses automatic detection", () => {
+      const result = parseArgs(["--paging=auto", "file.md"]);
+      expect(result.paging).toBe("auto");
+      expect(result.file).toBe("file.md");
+    });
+
+    test("default paging mode is auto", () => {
+      const result = parseArgs(["file.md"]);
+      expect(result.paging).toBe("auto");
+    });
+
+    test("--paging with invalid value keeps default", () => {
+      const result = parseArgs(["--paging=invalid", "file.md"]);
+      expect(result.paging).toBe("auto");
+      expect(result.file).toBe("file.md");
+    });
+
+    test("--paging=always with stdin", () => {
+      const result = parseArgs(["--paging=always", "-"]);
+      expect(result.paging).toBe("always");
+      expect(result.useStdin).toBe(true);
+    });
+
+    test("--paging=never ignores TTY detection", () => {
+      const result = parseArgs(["--paging=never", "file.md"]);
+      expect(result.paging).toBe("never");
+    });
+
+    test("multiple paging flags, last one wins", () => {
+      const result = parseArgs(["--paging=never", "--paging=always", "file.md"]);
+      expect(result.paging).toBe("always");
+    });
+  });
+
+  describe("--style flag", () => {
+    test("--style=full enables all components", () => {
+      const result = parseArgs(["--style=full", "file.md"]);
+      expect(result.style).toBe("full");
+      expect(result.file).toBe("file.md");
+    });
+
+    test("--style=plain disables all components", () => {
+      const result = parseArgs(["--style=plain", "file.md"]);
+      expect(result.style).toBe("plain");
+    });
+
+    test("--style=header enables only header", () => {
+      const result = parseArgs(["--style=header", "file.md"]);
+      expect(result.style).toBe("header");
+    });
+
+    test("--style=numbers enables only numbers", () => {
+      const result = parseArgs(["--style=numbers", "file.md"]);
+      expect(result.style).toBe("numbers");
+    });
+
+    test("--style=grid enables only grid", () => {
+      const result = parseArgs(["--style=grid", "file.md"]);
+      expect(result.style).toBe("grid");
+    });
+
+    test("--style with comma-separated components", () => {
+      const result = parseArgs(["--style=header,numbers", "file.md"]);
+      expect(result.style).toBe("header,numbers");
+    });
+
+    test("--style=header,numbers,grid", () => {
+      const result = parseArgs(["--style=header,numbers,grid", "file.md"]);
+      expect(result.style).toBe("header,numbers,grid");
+    });
+
+    test("default style is null", () => {
+      const result = parseArgs(["file.md"]);
+      expect(result.style).toBeNull();
+    });
+
+    test("--style=invalid is preserved as-is (parsing happens later)", () => {
+      const result = parseArgs(["--style=invalid", "file.md"]);
+      expect(result.style).toBe("invalid");
+    });
+
+    test("--style with spaces in components", () => {
+      const result = parseArgs(["--style=header, numbers", "file.md"]);
+      expect(result.style).toBe("header, numbers");
+    });
+
+    test("multiple --style flags, last one wins", () => {
+      const result = parseArgs(["--style=header", "--style=numbers", "file.md"]);
+      expect(result.style).toBe("numbers");
+    });
+
+    test("--style works with stdin", () => {
+      const result = parseArgs(["--style=grid", "-"]);
+      expect(result.style).toBe("grid");
+      expect(result.useStdin).toBe(true);
+    });
+
+    test("--style and --plain together", () => {
+      const result = parseArgs(["--style=header", "--plain", "file.md"]);
+      expect(result.style).toBe("header");
+      expect(result.plain).toBe(true);
+    });
+  });
+
+  describe("flag combinations", () => {
+    test("--plain and --paging together", () => {
+      const result = parseArgs(["--plain", "--paging=never", "file.md"]);
+      expect(result.plain).toBe(true);
+      expect(result.paging).toBe("never");
+    });
+
+    test("--plain and --style together", () => {
+      const result = parseArgs(["--plain", "--style=header", "file.md"]);
+      expect(result.plain).toBe(true);
+      expect(result.style).toBe("header");
+    });
+
+    test("all flags together", () => {
+      const result = parseArgs([
+        "--plain",
+        "--paging=always",
+        "--style=numbers",
+        "file.md",
+      ]);
+      expect(result.plain).toBe(true);
+      expect(result.paging).toBe("always");
+      expect(result.style).toBe("numbers");
+      expect(result.file).toBe("file.md");
+    });
+
+    test("flags in different order", () => {
+      const result = parseArgs([
+        "file.md",
+        "--style=grid",
+        "--plain",
+        "--paging=never",
+      ]);
+      expect(result.file).toBe("file.md");
+      expect(result.plain).toBe(true);
+      expect(result.paging).toBe("never");
+      expect(result.style).toBe("grid");
+    });
+
+    test("--help returns early, ignoring flags after it", () => {
+      const result = parseArgs([
+        "--style=header",
+        "--plain",
+        "--help",
+        "file.md",
+      ]);
+      expect(result.showHelp).toBe(true);
+      // Flags before --help are still processed
+      expect(result.style).toBe("header");
+      expect(result.plain).toBe(true);
+    });
+
+    test("--version returns early, ignoring flags after it", () => {
+      const result = parseArgs([
+        "--style=header",
+        "--version",
+        "file.md",
+      ]);
+      expect(result.showVersion).toBe(true);
+      // Style flag is processed before --version
+      expect(result.style).toBe("header");
+    });
+  });
 });
 
 describe("CLI integration", () => {
@@ -190,6 +397,42 @@ describe("CLI integration", () => {
 
       expect(exitCode).toBe(0);
       expect(stdout).toContain("USAGE:");
+    });
+
+    test("--help documents --plain flag", async () => {
+      const proc = Bun.spawn(["bun", "run", CLI_PATH, "--help"], {
+        stdout: "pipe",
+        stderr: "pipe",
+      });
+      const exitCode = await proc.exited;
+      const stdout = await new Response(proc.stdout).text();
+
+      expect(exitCode).toBe(0);
+      expect(stdout).toContain("--plain");
+    });
+
+    test("--help documents --paging flag", async () => {
+      const proc = Bun.spawn(["bun", "run", CLI_PATH, "--help"], {
+        stdout: "pipe",
+        stderr: "pipe",
+      });
+      const exitCode = await proc.exited;
+      const stdout = await new Response(proc.stdout).text();
+
+      expect(exitCode).toBe(0);
+      expect(stdout).toContain("--paging");
+    });
+
+    test("--help documents --style flag", async () => {
+      const proc = Bun.spawn(["bun", "run", CLI_PATH, "--help"], {
+        stdout: "pipe",
+        stderr: "pipe",
+      });
+      const exitCode = await proc.exited;
+      const stdout = await new Response(proc.stdout).text();
+
+      expect(exitCode).toBe(0);
+      expect(stdout).toContain("--style");
     });
   });
 
@@ -277,6 +520,187 @@ describe("CLI integration", () => {
       expect(stdout).toContain("Title");
       expect(stdout).toContain("Subtitle");
       expect(stdout).toContain("Item 1");
+    });
+  });
+
+  describe("bat-style flags", () => {
+    test("--plain produces output without decorations", async () => {
+      const proc = Bun.spawn(
+        ["bun", "run", CLI_PATH, "--plain", "examples/test.md"],
+        {
+          stdout: "pipe",
+          stderr: "pipe",
+          env: { ...process.env, FORCE_COLOR: "1" },
+        }
+      );
+      const exitCode = await proc.exited;
+      const stdout = await new Response(proc.stdout).text();
+
+      expect(exitCode).toBe(0);
+      expect(stdout).toContain("Test Document");
+      // Decorator line-number pattern: "  1 │ " -- absent when --plain
+      expect(stdout).not.toMatch(/^\s*\d+\s│\s/m);
+      expect(stdout).not.toContain("File:");
+    });
+
+    test("--style=numbers produces line numbers without header", async () => {
+      const proc = Bun.spawn(
+        ["bun", "run", CLI_PATH, "--style=numbers", "examples/test.md"],
+        {
+          stdout: "pipe",
+          stderr: "pipe",
+          env: { ...process.env, FORCE_COLOR: "1" },
+        }
+      );
+      const exitCode = await proc.exited;
+      const stdout = await new Response(proc.stdout).text();
+
+      expect(exitCode).toBe(0);
+      // Decorator adds " │ " separator after line numbers
+      expect(stdout).toContain(" │ ");
+      expect(stdout).not.toContain("File:");
+    });
+
+    test("--style=header produces header without line numbers", async () => {
+      const proc = Bun.spawn(
+        ["bun", "run", CLI_PATH, "--style=header", "examples/test.md"],
+        {
+          stdout: "pipe",
+          stderr: "pipe",
+          env: { ...process.env, FORCE_COLOR: "1" },
+        }
+      );
+      const exitCode = await proc.exited;
+      const stdout = await new Response(proc.stdout).text();
+
+      expect(exitCode).toBe(0);
+      expect(stdout).toContain("File:");
+      // No line number separator from decorator
+      // Split to check content lines only (skip first line which is the header)
+      const lines = stdout.split("\n").slice(1);
+      const hasNumberedLine = lines.some((l) => /^\s*\d+\s│\s/.test(l));
+      expect(hasNumberedLine).toBe(false);
+    });
+
+    test("--style=full produces header, numbers, and grid", async () => {
+      const proc = Bun.spawn(
+        ["bun", "run", CLI_PATH, "--style=full", "examples/test.md"],
+        {
+          stdout: "pipe",
+          stderr: "pipe",
+          env: { ...process.env, FORCE_COLOR: "1" },
+        }
+      );
+      const exitCode = await proc.exited;
+      const stdout = await new Response(proc.stdout).text();
+
+      expect(exitCode).toBe(0);
+      expect(stdout).toContain("File:");
+      expect(stdout).toContain(" │ ");
+      expect(stdout).toContain("─");
+    });
+
+    test("--paging=never writes to stdout and exits 0", async () => {
+      const proc = Bun.spawn(
+        ["bun", "run", CLI_PATH, "--paging=never", "examples/test.md"],
+        {
+          stdout: "pipe",
+          stderr: "pipe",
+        }
+      );
+      const exitCode = await proc.exited;
+      const stdout = await new Response(proc.stdout).text();
+
+      expect(exitCode).toBe(0);
+      expect(stdout).toContain("Test Document");
+    });
+
+    test("--style=invalid produces error", async () => {
+      const proc = Bun.spawn(
+        ["bun", "run", CLI_PATH, "--style=invalid", "examples/test.md"],
+        {
+          stdout: "pipe",
+          stderr: "pipe",
+        }
+      );
+      const exitCode = await proc.exited;
+      const stderr = await new Response(proc.stderr).text();
+
+      expect(exitCode).toBe(1);
+      expect(stderr).toContain("unknown style");
+    });
+  });
+
+  describe("edge cases", () => {
+    test("empty markdown file renders without error", async () => {
+      await Bun.write("/tmp/mdview-test-empty.md", "");
+      const proc = Bun.spawn(
+        ["bun", "run", CLI_PATH, "/tmp/mdview-test-empty.md"],
+        {
+          stdout: "pipe",
+          stderr: "pipe",
+        }
+      );
+      const exitCode = await proc.exited;
+
+      expect(exitCode).toBe(0);
+    });
+
+    test("stdin with decorations shows numbers and grid but no filename header", async () => {
+      const proc = Bun.spawn(["bun", "run", CLI_PATH, "-"], {
+        stdin: "pipe",
+        stdout: "pipe",
+        stderr: "pipe",
+        env: { ...process.env, FORCE_COLOR: "1" },
+      });
+
+      proc.stdin.write("# Hello\nSome text");
+      proc.stdin.end();
+
+      const exitCode = await proc.exited;
+      const stdout = await new Response(proc.stdout).text();
+
+      expect(exitCode).toBe(0);
+      expect(stdout).toContain(" │ ");
+      expect(stdout).not.toContain("File:");
+    });
+
+    test("NO_COLOR suppresses decorations", async () => {
+      const env = { ...process.env, NO_COLOR: "1" };
+      delete env.FORCE_COLOR;
+      const proc = Bun.spawn(
+        ["bun", "run", CLI_PATH, "examples/test.md"],
+        {
+          stdout: "pipe",
+          stderr: "pipe",
+          env,
+        }
+      );
+      const exitCode = await proc.exited;
+      const stdout = await new Response(proc.stdout).text();
+
+      expect(exitCode).toBe(0);
+      // Decorator line-number pattern absent when NO_COLOR suppresses decorations
+      expect(stdout).not.toMatch(/^\s*\d+\s│\s/m);
+      expect(stdout).not.toContain("File:");
+    });
+
+    test("FORCE_COLOR forces decorations when piped", async () => {
+      const proc = Bun.spawn(
+        ["bun", "run", CLI_PATH, "examples/test.md"],
+        {
+          stdout: "pipe",
+          stderr: "pipe",
+          env: { ...process.env, FORCE_COLOR: "1" },
+        }
+      );
+      const exitCode = await proc.exited;
+      const stdout = await new Response(proc.stdout).text();
+
+      expect(exitCode).toBe(0);
+      // Decorations present despite piped stdout (not TTY)
+      const hasDecorations = stdout.includes(" │ ") || stdout.includes("─");
+      expect(hasDecorations).toBe(true);
     });
   });
 });
