@@ -398,6 +398,18 @@ describe("CLI integration", () => {
       expect(exitCode).toBe(0);
       expect(stdout).toContain("USAGE:");
     });
+
+    test("--help documents --plain flag", async () => {
+      const proc = Bun.spawn(["bun", "run", CLI_PATH, "--help"], {
+        stdout: "pipe",
+        stderr: "pipe",
+      });
+      const exitCode = await proc.exited;
+      const stdout = await new Response(proc.stdout).text();
+
+      expect(exitCode).toBe(0);
+      expect(stdout).toContain("--plain");
+    });
   });
 
   describe("version output", () => {

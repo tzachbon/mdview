@@ -38,7 +38,7 @@ Focus: Prove the integration test pattern works with one representative test bef
   - _Requirements: AC-2.1_
   - _Design: Flag combination integration section_
 
-- [ ] 1.3 [VERIFY] Quality checkpoint: typecheck + test
+- [x] 1.3 [VERIFY] Quality checkpoint: typecheck + test
   - **Do**: Run typecheck and full test suite
   - **Verify**: `cd /Users/zachbonfil/projects/private/mdview && bun tsc --noEmit && bun test 2>&1 | grep -E '^\s+[0-9]+ pass'`
   - **Done when**: 0 type errors, 215+ tests pass, 0 fail
@@ -46,7 +46,7 @@ Focus: Prove the integration test pattern works with one representative test bef
 
 ## Phase 2: Help Text Integration Tests
 
-- [ ] 2.1 Add --help documents --plain flag test
+- [x] 2.1 Add --help documents --plain flag test
   - **Do**:
     1. Inside `describe("help output")` in `src/index.test.ts`, add test: `--help documents --plain flag`
     2. Spawn CLI with `--help`, capture stdout
