@@ -560,5 +560,26 @@ describe("CLI integration", () => {
       expect(stdout).toContain(" │ ");
       expect(stdout).not.toContain("File:");
     });
+
+    test("--style=header produces header without line numbers", async () => {
+      const proc = Bun.spawn(
+        ["bun", "run", CLI_PATH, "--style=header", "examples/test.md"],
+        {
+          stdout: "pipe",
+          stderr: "pipe",
+          env: { ...process.env, FORCE_COLOR: "1" },
+        }
+      );
+      const exitCode = await proc.exited;
+      const stdout = await new Response(proc.stdout).text();
+
+      expect(exitCode).toBe(0);
+      expect(stdout).toContain("File:");
+      // No line number separator from decorator
+      // Split to check content lines only (skip first line which is the header)
+      const lines = stdout.split("\n").slice(1);
+      const hasNumberedLine = lines.some((l) => /^\s*\d+\s│\s/.test(l));
+      expect(hasNumberedLine).toBe(false);
+    });
   });
 });

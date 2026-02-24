@@ -83,7 +83,7 @@ Focus: Prove the integration test pattern works with one representative test bef
   - _Requirements: AC-2.2_
   - _Design: Flag combination integration section_
 
-- [ ] 3.2 Add --style=header integration test
+- [x] 3.2 Add --style=header integration test
   - **Do**:
     1. Add test: `--style=header produces header without line numbers`
     2. Spawn CLI with `--style=header` and `FORCE_COLOR=1` on `examples/test.md`
