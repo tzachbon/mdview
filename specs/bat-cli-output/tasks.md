@@ -202,13 +202,13 @@ Focus: Prove the integration test pattern works with one representative test bef
 
 ## Phase 5: Quality Gates + PR Lifecycle
 
-- [ ] 5.1 [VERIFY] Full local CI: typecheck + test + build
+- [x] 5.1 [VERIFY] Full local CI: typecheck + test + build
   - **Do**: Run complete local CI suite
   - **Verify**: `cd /Users/zachbonfil/projects/private/mdview && bun tsc --noEmit && bun test && bun build src/index.ts --compile --outfile mdview`
   - **Done when**: Build succeeds, all tests pass (227+ total, 0 fail)
   - **Commit**: `chore(cli): pass local CI` (if fixes needed)
 
-- [ ] 5.2 Create PR and verify CI
+- [x] 5.2 Create PR and verify CI
   - **Do**:
     1. Verify current branch is feature branch: `git branch --show-current` (expect `feat/bat-cli-output`)
     2. If on default branch, STOP and alert user
@@ -218,7 +218,7 @@ Focus: Prove the integration test pattern works with one representative test bef
   - **Done when**: PR created, CI green
   - **Commit**: none
 
-- [ ] 5.3 [VERIFY] AC checklist
+- [x] 5.3 [VERIFY] AC checklist
   - **Do**: Programmatically verify each acceptance criterion is met
   - **Verify**:
     1. AC-1.5: `cd /Users/zachbonfil/projects/private/mdview && bun test --filter "help" 2>&1 | grep -c "pass"` shows 5+ (original 2 + 3 new)
