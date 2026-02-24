@@ -95,13 +95,13 @@ Focus: Prove the integration test pattern works with one representative test bef
   - _Requirements: AC-2.3_
   - _Design: Flag combination integration section_
 
-- [ ] 3.3 [VERIFY] Quality checkpoint: typecheck + test
+- [x] 3.3 [VERIFY] Quality checkpoint: typecheck + test
   - **Do**: Run typecheck and full test suite
   - **Verify**: `cd /Users/zachbonfil/projects/private/mdview && bun tsc --noEmit && bun test 2>&1 | grep -E '^\s+[0-9]+ pass'`
   - **Done when**: 0 type errors, 219+ tests pass, 0 fail
   - **Commit**: `chore(cli): pass quality checkpoint` (only if fixes needed)
 
-- [ ] 3.4 Add --style=full integration test
+- [x] 3.4 Add --style=full integration test
   - **Do**:
     1. Add test: `--style=full produces header, numbers, and grid`
     2. Spawn CLI with `--style=full` and `FORCE_COLOR=1` on `examples/test.md`

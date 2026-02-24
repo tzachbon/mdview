@@ -581,5 +581,23 @@ describe("CLI integration", () => {
       const hasNumberedLine = lines.some((l) => /^\s*\d+\s│\s/.test(l));
       expect(hasNumberedLine).toBe(false);
     });
+
+    test("--style=full produces header, numbers, and grid", async () => {
+      const proc = Bun.spawn(
+        ["bun", "run", CLI_PATH, "--style=full", "examples/test.md"],
+        {
+          stdout: "pipe",
+          stderr: "pipe",
+          env: { ...process.env, FORCE_COLOR: "1" },
+        }
+      );
+      const exitCode = await proc.exited;
+      const stdout = await new Response(proc.stdout).text();
+
+      expect(exitCode).toBe(0);
+      expect(stdout).toContain("File:");
+      expect(stdout).toContain(" │ ");
+      expect(stdout).toContain("─");
+    });
   });
 });
