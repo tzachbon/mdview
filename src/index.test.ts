@@ -684,5 +684,23 @@ describe("CLI integration", () => {
       expect(stdout).not.toMatch(/^\s*\d+\s│\s/m);
       expect(stdout).not.toContain("File:");
     });
+
+    test("FORCE_COLOR forces decorations when piped", async () => {
+      const proc = Bun.spawn(
+        ["bun", "run", CLI_PATH, "examples/test.md"],
+        {
+          stdout: "pipe",
+          stderr: "pipe",
+          env: { ...process.env, FORCE_COLOR: "1" },
+        }
+      );
+      const exitCode = await proc.exited;
+      const stdout = await new Response(proc.stdout).text();
+
+      expect(exitCode).toBe(0);
+      // Decorations present despite piped stdout (not TTY)
+      const hasDecorations = stdout.includes(" │ ") || stdout.includes("─");
+      expect(hasDecorations).toBe(true);
+    });
   });
 });

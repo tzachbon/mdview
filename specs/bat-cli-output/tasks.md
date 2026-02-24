@@ -188,7 +188,7 @@ Focus: Prove the integration test pattern works with one representative test bef
   - _Requirements: AC-3.3_
   - _Design: Edge Case Tests section_
 
-- [ ] 4.5 Add FORCE_COLOR forces decorations test
+- [x] 4.5 Add FORCE_COLOR forces decorations test
   - **Do**:
     1. Add test: `FORCE_COLOR forces decorations when piped`
     2. Spawn CLI with `env: { ...process.env, FORCE_COLOR: "1" }` on `examples/test.md` (stdout is piped, not TTY)
