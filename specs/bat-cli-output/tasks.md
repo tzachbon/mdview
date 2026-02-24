@@ -158,7 +158,7 @@ Focus: Prove the integration test pattern works with one representative test bef
   - _Requirements: AC-3.1_
   - _Design: Edge Case Tests section_
 
-- [ ] 4.2 Add stdin with decorations test
+- [x] 4.2 Add stdin with decorations test
   - **Do**:
     1. Inside `describe("edge cases")`, add test: `stdin with decorations shows numbers and grid but no filename header`
     2. Spawn CLI with `["-"]` and `FORCE_COLOR=1`, pipe `# Hello\nSome text` via stdin

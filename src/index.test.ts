@@ -645,5 +645,24 @@ describe("CLI integration", () => {
 
       expect(exitCode).toBe(0);
     });
+
+    test("stdin with decorations shows numbers and grid but no filename header", async () => {
+      const proc = Bun.spawn(["bun", "run", CLI_PATH, "-"], {
+        stdin: "pipe",
+        stdout: "pipe",
+        stderr: "pipe",
+        env: { ...process.env, FORCE_COLOR: "1" },
+      });
+
+      proc.stdin.write("# Hello\nSome text");
+      proc.stdin.end();
+
+      const exitCode = await proc.exited;
+      const stdout = await new Response(proc.stdout).text();
+
+      expect(exitCode).toBe(0);
+      expect(stdout).toContain(" │ ");
+      expect(stdout).not.toContain("File:");
+    });
   });
 });
