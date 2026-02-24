@@ -448,8 +448,8 @@ describe("pipeToPager", () => {
       process.env.MDVIEW_PAGER = "cat";
 
       try {
-        // Create 1MB of content
-        const largeContent = "x\n".repeat(500000);
+        // Create ~100KB of content (enough to exceed pipe buffer)
+        const largeContent = "x\n".repeat(50000);
         await pipeToPager(largeContent);
         expect(true).toBe(true);
       } finally {
