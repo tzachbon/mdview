@@ -137,7 +137,7 @@ Focus: Prove the integration test pattern works with one representative test bef
   - _Requirements: AC-2.6_
   - _Design: Flag combination integration section_
 
-- [ ] 3.7 [VERIFY] Quality checkpoint: typecheck + test
+- [x] 3.7 [VERIFY] Quality checkpoint: typecheck + test
   - **Do**: Run typecheck and full test suite
   - **Verify**: `cd /Users/zachbonfil/projects/private/mdview && bun tsc --noEmit && bun test 2>&1 | grep -E '^\s+[0-9]+ pass'`
   - **Done when**: 0 type errors, 222+ tests pass, 0 fail
@@ -145,7 +145,7 @@ Focus: Prove the integration test pattern works with one representative test bef
 
 ## Phase 4: Edge Case Tests
 
-- [ ] 4.1 Add empty markdown file test
+- [x] 4.1 Add empty markdown file test
   - **Do**:
     1. Add `describe("edge cases")` inside `describe("CLI integration")` in `src/index.test.ts`
     2. Add test: `empty markdown file renders without error`

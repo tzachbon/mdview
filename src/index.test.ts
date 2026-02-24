@@ -630,4 +630,20 @@ describe("CLI integration", () => {
       expect(stderr).toContain("unknown style");
     });
   });
+
+  describe("edge cases", () => {
+    test("empty markdown file renders without error", async () => {
+      await Bun.write("/tmp/mdview-test-empty.md", "");
+      const proc = Bun.spawn(
+        ["bun", "run", CLI_PATH, "/tmp/mdview-test-empty.md"],
+        {
+          stdout: "pipe",
+          stderr: "pipe",
+        }
+      );
+      const exitCode = await proc.exited;
+
+      expect(exitCode).toBe(0);
+    });
+  });
 });
