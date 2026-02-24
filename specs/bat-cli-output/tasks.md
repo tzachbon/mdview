@@ -58,7 +58,7 @@ Focus: Prove the integration test pattern works with one representative test bef
   - _Requirements: AC-1.5_
   - _Design: Help text flag documentation section_
 
-- [ ] 2.2 Add --help documents --paging and --style flag tests
+- [x] 2.2 Add --help documents --paging and --style flag tests
   - **Do**:
     1. Inside `describe("help output")`, add test: `--help documents --paging flag` -- assert stdout contains `--paging`
     2. Add test: `--help documents --style flag` -- assert stdout contains `--style`

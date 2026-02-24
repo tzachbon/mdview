@@ -410,6 +410,30 @@ describe("CLI integration", () => {
       expect(exitCode).toBe(0);
       expect(stdout).toContain("--plain");
     });
+
+    test("--help documents --paging flag", async () => {
+      const proc = Bun.spawn(["bun", "run", CLI_PATH, "--help"], {
+        stdout: "pipe",
+        stderr: "pipe",
+      });
+      const exitCode = await proc.exited;
+      const stdout = await new Response(proc.stdout).text();
+
+      expect(exitCode).toBe(0);
+      expect(stdout).toContain("--paging");
+    });
+
+    test("--help documents --style flag", async () => {
+      const proc = Bun.spawn(["bun", "run", CLI_PATH, "--help"], {
+        stdout: "pipe",
+        stderr: "pipe",
+      });
+      const exitCode = await proc.exited;
+      const stdout = await new Response(proc.stdout).text();
+
+      expect(exitCode).toBe(0);
+      expect(stdout).toContain("--style");
+    });
   });
 
   describe("version output", () => {
