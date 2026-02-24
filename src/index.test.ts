@@ -664,5 +664,25 @@ describe("CLI integration", () => {
       expect(stdout).toContain(" │ ");
       expect(stdout).not.toContain("File:");
     });
+
+    test("NO_COLOR suppresses decorations", async () => {
+      const env = { ...process.env, NO_COLOR: "1" };
+      delete env.FORCE_COLOR;
+      const proc = Bun.spawn(
+        ["bun", "run", CLI_PATH, "examples/test.md"],
+        {
+          stdout: "pipe",
+          stderr: "pipe",
+          env,
+        }
+      );
+      const exitCode = await proc.exited;
+      const stdout = await new Response(proc.stdout).text();
+
+      expect(exitCode).toBe(0);
+      // Decorator line-number pattern absent when NO_COLOR suppresses decorations
+      expect(stdout).not.toMatch(/^\s*\d+\s│\s/m);
+      expect(stdout).not.toContain("File:");
+    });
   });
 });

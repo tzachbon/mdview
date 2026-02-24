@@ -170,13 +170,13 @@ Focus: Prove the integration test pattern works with one representative test bef
   - _Requirements: AC-3.2_
   - _Design: Edge Case Tests section_
 
-- [ ] 4.3 [VERIFY] Quality checkpoint: typecheck + test
+- [x] 4.3 [VERIFY] Quality checkpoint: typecheck + test
   - **Do**: Run typecheck and full test suite
   - **Verify**: `cd /Users/zachbonfil/projects/private/mdview && bun tsc --noEmit && bun test 2>&1 | grep -E '^\s+[0-9]+ pass'`
   - **Done when**: 0 type errors, 224+ tests pass, 0 fail
   - **Commit**: `chore(cli): pass quality checkpoint` (only if fixes needed)
 
-- [ ] 4.4 Add NO_COLOR suppresses decorations test
+- [x] 4.4 Add NO_COLOR suppresses decorations test
   - **Do**:
     1. Add test: `NO_COLOR suppresses decorations`
     2. Spawn CLI with `env: { ...process.env, NO_COLOR: "1" }` (no FORCE_COLOR) on `examples/test.md`
