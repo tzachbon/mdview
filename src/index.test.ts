@@ -614,5 +614,20 @@ describe("CLI integration", () => {
       expect(exitCode).toBe(0);
       expect(stdout).toContain("Test Document");
     });
+
+    test("--style=invalid produces error", async () => {
+      const proc = Bun.spawn(
+        ["bun", "run", CLI_PATH, "--style=invalid", "examples/test.md"],
+        {
+          stdout: "pipe",
+          stderr: "pipe",
+        }
+      );
+      const exitCode = await proc.exited;
+      const stderr = await new Response(proc.stderr).text();
+
+      expect(exitCode).toBe(1);
+      expect(stderr).toContain("unknown style");
+    });
   });
 });

@@ -125,7 +125,7 @@ Focus: Prove the integration test pattern works with one representative test bef
   - _Requirements: AC-2.4_
   - _Design: Flag combination integration section_
 
-- [ ] 3.6 Add --style=invalid error integration test
+- [x] 3.6 Add --style=invalid error integration test
   - **Do**:
     1. Add test: `--style=invalid produces error`
     2. Spawn CLI with `--style=invalid` on `examples/test.md`
