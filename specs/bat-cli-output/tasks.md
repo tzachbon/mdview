@@ -113,7 +113,7 @@ Focus: Prove the integration test pattern works with one representative test bef
   - _Requirements: AC-2.5_
   - _Design: Flag combination integration section_
 
-- [ ] 3.5 Add --paging=never integration test
+- [x] 3.5 Add --paging=never integration test
   - **Do**:
     1. Add test: `--paging=never writes to stdout and exits 0`
     2. Spawn CLI with `--paging=never` on `examples/test.md`

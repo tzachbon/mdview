@@ -599,5 +599,20 @@ describe("CLI integration", () => {
       expect(stdout).toContain(" │ ");
       expect(stdout).toContain("─");
     });
+
+    test("--paging=never writes to stdout and exits 0", async () => {
+      const proc = Bun.spawn(
+        ["bun", "run", CLI_PATH, "--paging=never", "examples/test.md"],
+        {
+          stdout: "pipe",
+          stderr: "pipe",
+        }
+      );
+      const exitCode = await proc.exited;
+      const stdout = await new Response(proc.stdout).text();
+
+      expect(exitCode).toBe(0);
+      expect(stdout).toContain("Test Document");
+    });
   });
 });
