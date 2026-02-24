@@ -1,0 +1,30 @@
+{
+  "version": "1.0",
+  "updated": "2026-02-24T12:36:37Z",
+  "directories": [
+    {
+      "path": "./specs",
+      "specsCount": 3,
+      "isDefault": true
+    }
+  ],
+  "specs": [
+    {
+      "name": "bat-style-output",
+      "path": "./specs/bat-style-output",
+      "phase": "tasks"
+    },
+    {
+      "name": "bat-cli-output",
+      "path": "./specs/bat-cli-output",
+      "phase": "research"
+    },
+    {
+      "name": "mdview",
+      "path": "./specs/mdview",
+      "phase": "complete",
+      "taskIndex": 17,
+      "totalTasks": 18
+    }
+  ]
+}
