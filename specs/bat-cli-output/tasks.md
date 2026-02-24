@@ -71,7 +71,7 @@ Focus: Prove the integration test pattern works with one representative test bef
 
 ## Phase 3: Bat-Style Flag Integration Tests
 
-- [ ] 3.1 Add --style=numbers integration test
+- [x] 3.1 Add --style=numbers integration test
   - **Do**:
     1. Inside `describe("bat-style flags")` (created in 1.2), add test: `--style=numbers produces line numbers without header`
     2. Spawn CLI with `["bun", "run", CLI_PATH, "--style=numbers", "examples/test.md"]` and `FORCE_COLOR=1`

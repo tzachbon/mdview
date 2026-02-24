@@ -542,5 +542,23 @@ describe("CLI integration", () => {
       expect(stdout).not.toMatch(/^\s*\d+\s│\s/m);
       expect(stdout).not.toContain("File:");
     });
+
+    test("--style=numbers produces line numbers without header", async () => {
+      const proc = Bun.spawn(
+        ["bun", "run", CLI_PATH, "--style=numbers", "examples/test.md"],
+        {
+          stdout: "pipe",
+          stderr: "pipe",
+          env: { ...process.env, FORCE_COLOR: "1" },
+        }
+      );
+      const exitCode = await proc.exited;
+      const stdout = await new Response(proc.stdout).text();
+
+      expect(exitCode).toBe(0);
+      // Decorator adds " │ " separator after line numbers
+      expect(stdout).toContain(" │ ");
+      expect(stdout).not.toContain("File:");
+    });
   });
 });
