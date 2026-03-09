@@ -4,14 +4,14 @@
 
 # mdview
 
-**Fast CLI tool to render Markdown files beautifully in the terminal, with Mermaid diagram support.**
+**Fast CLI tool to render Markdown files in the terminal, with Mermaid and native image support.**
 
 [![License: ISC](https://img.shields.io/badge/License-ISC-blue.svg)](https://opensource.org/licenses/ISC)
 [![Bun](https://img.shields.io/badge/Bun-%23000000.svg?style=flat&logo=bun&logoColor=white)](https://bun.sh)
 [![TypeScript](https://img.shields.io/badge/TypeScript-007ACC?style=flat&logo=typescript&logoColor=white)](https://www.typescriptlang.org/)
 [![PRs Welcome](https://img.shields.io/badge/PRs-welcome-brightgreen.svg)](http://makeapullrequest.com)
 
-[Installation](#installation) | [Usage](#usage) | [Mermaid Support](#mermaid-support) | [Contributing](#contributing)
+[Installation](#installation) | [Usage](#usage) | [Mermaid Support](#mermaid-support) | [Image Support](#image-support) | [Contributing](#contributing)
 
 </div>
 
@@ -20,6 +20,7 @@
 ## Features
 
 - **Full Markdown rendering** - Headers, bold, italic, code blocks, tables, lists, links
+- **Native image rendering** - Uses `timg` for local markdown images and HTML `<img>` tags
 - **Mermaid diagrams** - Converts Mermaid syntax to ASCII art flowcharts and diagrams
 - **Stdin support** - Pipe content directly from other commands
 - **Fast startup** - Under 50ms with compiled binary
@@ -60,6 +61,8 @@ Download the appropriate binary for your platform from [Releases](https://github
 
 Requires [Bun](https://bun.sh) v1.0 or later.
 
+For native image rendering, install [`timg`](https://github.com/hzeller/timg) separately.
+
 ```bash
 # Clone the repository
 git clone https://github.com/tzachbon/mdview.git
@@ -95,6 +98,14 @@ mdview <file>          Render a markdown file
 mdview -               Read from stdin
 mdview --help, -h      Show help
 mdview --version, -v   Show version
+```
+
+### Image Flags
+
+```bash
+mdview README.md --images=auto
+mdview README.md --images=always --image-width=60
+mdview README.md --image-pixel=half --image-center
 ```
 
 ### Examples
@@ -135,6 +146,26 @@ Renders as:
 Supported diagram types:
 - Flowcharts (`graph`, `flowchart`)
 - Sequence diagrams (`sequenceDiagram`)
+
+## Image Support
+
+mdview renders local markdown images and HTML `<img>` tags with `timg` when available:
+
+````markdown
+![Architecture](./docs/arch.png)
+
+<img src="./docs/logo.png" alt="Logo" title="Brand">
+````
+
+Supported in v1:
+- Relative local paths
+- Absolute local paths
+- `file://` image URLs
+
+Fallback behavior:
+- If `timg` is missing, mdview shows image metadata instead of failing
+- Remote image URLs fall back to text
+- `--images=never` disables native image rendering
 
 ## Development
 
@@ -197,6 +228,20 @@ If a Mermaid diagram displays as raw code in a box, it means the diagram syntax 
 - Syntax errors in node definitions
 - Unsupported diagram types
 
+### Images render as text fallback
+
+This happens when:
+- `timg` is not installed
+- The image source is remote (`http://` or `https://`)
+- Output is not a suitable terminal and `--images=auto` is in effect
+
+Useful flags:
+```bash
+mdview README.md --images=always
+mdview README.md --image-width=60
+mdview README.md --image-pixel=half
+```
+
 ### Binary won't run
 
 Ensure you built with the correct architecture:
@@ -209,6 +254,7 @@ bun run build  # Creates binary for current platform
 - **Runtime**: [Bun](https://bun.sh) - Fast JavaScript runtime
 - **Markdown**: [marked](https://marked.js.org/) + [marked-terminal](https://github.com/mikaelbr/marked-terminal)
 - **Mermaid**: [beautiful-mermaid](https://github.com/niconiahi/beautiful-mermaid)
+- **Images**: [timg](https://github.com/hzeller/timg)
 - **Styling**: [chalk](https://github.com/chalk/chalk)
 
 ## Contributing
@@ -226,6 +272,7 @@ PRs welcome! See [CONTRIBUTING.md](CONTRIBUTING.md) for details.
 - [marked](https://marked.js.org/) for the excellent Markdown parser
 - [marked-terminal](https://github.com/mikaelbr/marked-terminal) for terminal rendering
 - [beautiful-mermaid](https://github.com/niconiahi/beautiful-mermaid) for ASCII diagram conversion
+- [timg](https://github.com/hzeller/timg) for terminal image rendering
 
 ---
 

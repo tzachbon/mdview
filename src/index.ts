@@ -3,7 +3,9 @@
  * mdview CLI - Render Markdown files in the terminal with Mermaid support
  */
 
+import path from "path"
 import type { PagingMode } from "./pager.js";
+import type { ImagePixelMode, ImageRenderMode } from "./images.js"
 
 /**
  * Error types for consistent error handling
@@ -53,6 +55,10 @@ USAGE:
 OPTIONS:
   --plain, -p                           Disable all decorations (header, numbers, grid)
   --paging=<mode>                       Control pager usage: never, always, auto (default)
+  --images=<mode>                       Control native image rendering: never, always, auto (default)
+  --image-width=<chars>                 Set image width in terminal cells
+  --image-pixel=<mode>                  Image pixel mode: quarter, half, kitty, iterm
+  --image-center                        Center rendered images
   --style=<components>                  Control decoration components
     Available components: header, numbers, grid
     Presets: full (all), plain (none)
@@ -61,6 +67,7 @@ OPTIONS:
 EXAMPLES:
   mdview README.md
   mdview README.md --style=plain
+  mdview README.md --images=always --image-width=60
   mdview README.md --paging=never
   cat README.md | mdview -
   echo "# Hello" | mdview - --plain
@@ -77,6 +84,10 @@ export interface ParsedArgs {
   paging: PagingMode;
   plain: boolean;
   style: string | null;
+  images: ImageRenderMode;
+  imageWidth: number | null;
+  imagePixel: ImagePixelMode | null;
+  imageCenter: boolean;
 }
 
 /**
@@ -92,6 +103,10 @@ export function parseArgs(args: string[]): ParsedArgs {
     paging: "auto",
     plain: false,
     style: null,
+    images: "auto",
+    imageWidth: null,
+    imagePixel: null,
+    imageCenter: false,
   };
 
   for (let i = 0; i < args.length; i++) {
@@ -121,6 +136,44 @@ export function parseArgs(args: string[]): ParsedArgs {
       if (mode === "never" || mode === "always" || mode === "auto") {
         result.paging = mode;
       }
+      continue;
+    }
+
+    // Handle --images=<mode>
+    if (arg.startsWith("--images=")) {
+      const mode = arg.slice("--images=".length);
+      if (mode === "never" || mode === "always" || mode === "auto") {
+        result.images = mode;
+      }
+      continue;
+    }
+
+    // Handle --image-width=<chars>
+    if (arg.startsWith("--image-width=")) {
+      const width = Number(arg.slice("--image-width=".length));
+      if (Number.isFinite(width) && width > 0) {
+        result.imageWidth = Math.floor(width);
+      }
+      continue;
+    }
+
+    // Handle --image-pixel=<mode>
+    if (arg.startsWith("--image-pixel=")) {
+      const pixelMode = arg.slice("--image-pixel=".length);
+      if (
+        pixelMode === "quarter" ||
+        pixelMode === "half" ||
+        pixelMode === "kitty" ||
+        pixelMode === "iterm"
+      ) {
+        result.imagePixel = pixelMode;
+      }
+      continue;
+    }
+
+    // Handle --image-center
+    if (arg === "--image-center") {
+      result.imageCenter = true;
       continue;
     }
 
@@ -194,15 +247,32 @@ async function main(): Promise<void> {
     }
   }
 
+  const isTTY = process.stdout.isTTY === true;
+  const terminalWidth = process.stdout.columns || 80;
+  const sourceDir = args.useStdin
+    ? process.cwd()
+    : path.dirname(path.resolve(args.file as string));
+
   // Render - lazy load renderer to keep --version fast
   const { render } = await import("./renderer.js");
-  const output = render(markdown);
+  const output = render(markdown, {
+    width: terminalWidth,
+    sourceDir,
+    stdoutIsTTY: isTTY,
+    paging: args.paging,
+    images: {
+      mode: args.images,
+      width: args.imageWidth ?? undefined,
+      pixelMode: args.imagePixel ?? undefined,
+      center: args.imageCenter,
+    },
+  });
 
   // Determine whether to apply decorations
-  const isTTY = process.stdout.isTTY === true;
   const noColor = "NO_COLOR" in process.env;
   const forceColor = "FORCE_COLOR" in process.env;
-  const useDecorations = !args.plain && (isTTY || forceColor) && !noColor;
+  const useDecorations =
+    !args.plain && ((isTTY && !noColor) || forceColor);
 
   // Lazy load decorator and pager
   const { decorate, parseStyle } = await import("./decorator.js");
@@ -217,7 +287,7 @@ async function main(): Promise<void> {
   const decorated = useDecorations
     ? decorate(output, {
         filename: args.file ? args.file : undefined,
-        width: process.stdout.columns || 80,
+        width: terminalWidth,
         style,
       })
     : output;

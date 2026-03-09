@@ -271,6 +271,69 @@ describe("parseArgs", () => {
     });
   });
 
+  describe("--images flag", () => {
+    test("--images=never disables native images", () => {
+      const result = parseArgs(["--images=never", "file.md"]);
+      expect(result.images).toBe("never");
+    });
+
+    test("--images=always enables native images", () => {
+      const result = parseArgs(["--images=always", "file.md"]);
+      expect(result.images).toBe("always");
+    });
+
+    test("default image mode is auto", () => {
+      const result = parseArgs(["file.md"]);
+      expect(result.images).toBe("auto");
+    });
+
+    test("invalid image mode keeps default", () => {
+      const result = parseArgs(["--images=maybe", "file.md"]);
+      expect(result.images).toBe("auto");
+    });
+  });
+
+  describe("--image-width flag", () => {
+    test("parses image width", () => {
+      const result = parseArgs(["--image-width=60", "file.md"]);
+      expect(result.imageWidth).toBe(60);
+    });
+
+    test("invalid image width is ignored", () => {
+      const result = parseArgs(["--image-width=wide", "file.md"]);
+      expect(result.imageWidth).toBeNull();
+    });
+
+    test("non-positive image width is ignored", () => {
+      const result = parseArgs(["--image-width=0", "file.md"]);
+      expect(result.imageWidth).toBeNull();
+    });
+  });
+
+  describe("--image-pixel flag", () => {
+    test("parses quarter pixel mode", () => {
+      const result = parseArgs(["--image-pixel=quarter", "file.md"]);
+      expect(result.imagePixel).toBe("quarter");
+    });
+
+    test("parses kitty pixel mode", () => {
+      const result = parseArgs(["--image-pixel=kitty", "file.md"]);
+      expect(result.imagePixel).toBe("kitty");
+    });
+
+    test("invalid image pixel mode is ignored", () => {
+      const result = parseArgs(["--image-pixel=rgb", "file.md"]);
+      expect(result.imagePixel).toBeNull();
+    });
+  });
+
+  describe("--image-center flag", () => {
+    test("enables image centering", () => {
+      const result = parseArgs(["--image-center", "file.md"]);
+      expect(result.imageCenter).toBe(true);
+    });
+  });
+
   describe("flag combinations", () => {
     test("--plain and --paging together", () => {
       const result = parseArgs(["--plain", "--paging=never", "file.md"]);
@@ -288,11 +351,19 @@ describe("parseArgs", () => {
       const result = parseArgs([
         "--plain",
         "--paging=always",
+        "--images=always",
+        "--image-width=72",
+        "--image-pixel=half",
+        "--image-center",
         "--style=numbers",
         "file.md",
       ]);
       expect(result.plain).toBe(true);
       expect(result.paging).toBe("always");
+      expect(result.images).toBe("always");
+      expect(result.imageWidth).toBe(72);
+      expect(result.imagePixel).toBe("half");
+      expect(result.imageCenter).toBe(true);
       expect(result.style).toBe("numbers");
       expect(result.file).toBe("file.md");
     });
@@ -433,6 +504,21 @@ describe("CLI integration", () => {
 
       expect(exitCode).toBe(0);
       expect(stdout).toContain("--style");
+    });
+
+    test("--help documents image flags", async () => {
+      const proc = Bun.spawn(["bun", "run", CLI_PATH, "--help"], {
+        stdout: "pipe",
+        stderr: "pipe",
+      });
+      const exitCode = await proc.exited;
+      const stdout = await new Response(proc.stdout).text();
+
+      expect(exitCode).toBe(0);
+      expect(stdout).toContain("--images");
+      expect(stdout).toContain("--image-width");
+      expect(stdout).toContain("--image-pixel");
+      expect(stdout).toContain("--image-center");
     });
   });
 
@@ -666,8 +752,11 @@ describe("CLI integration", () => {
     });
 
     test("NO_COLOR suppresses decorations", async () => {
-      const env = { ...process.env, NO_COLOR: "1" };
-      delete env.FORCE_COLOR;
+      const env: Record<string, string | undefined> = {
+        ...process.env,
+        NO_COLOR: "1",
+      };
+      delete env["FORCE_COLOR"];
       const proc = Bun.spawn(
         ["bun", "run", CLI_PATH, "examples/test.md"],
         {

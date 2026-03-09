@@ -485,7 +485,8 @@ describe("decorate", () => {
       });
       const lines = result.split("\n");
       const topBorder = lines[0];
-      expect(topBorder.length).toBe(40);
+      expect(topBorder).toBeDefined();
+      expect(topBorder?.length).toBe(40);
     });
 
     test("grid with numbers includes junction", () => {

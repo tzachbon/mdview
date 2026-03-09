@@ -1,10 +1,34 @@
 /**
  * Unit tests for renderer.ts
  */
-import { describe, test, expect } from "bun:test";
+import { afterEach, beforeEach, describe, expect, test } from "bun:test";
 import { render } from "./renderer";
 
+const originalSpawnSync = Bun.spawnSync
+const originalWhich = Bun.which
+
+function createSpawnResult(stdout: string) {
+  return {
+    stdout: Buffer.from(stdout),
+    stderr: Buffer.from(""),
+    exitCode: 0,
+    success: true,
+    resourceUsage: {} as never,
+    pid: 1,
+  }
+}
+
 describe("render", () => {
+  beforeEach(() => {
+    Bun.which = originalWhich
+    Bun.spawnSync = originalSpawnSync
+  })
+
+  afterEach(() => {
+    Bun.which = originalWhich
+    Bun.spawnSync = originalSpawnSync
+  })
+
   describe("plain markdown", () => {
     test("renders headers", () => {
       const md = "# Hello World";
@@ -266,11 +290,64 @@ graph TD
       // URL might be shown or hidden depending on terminal renderer
     });
 
-    test("renders images as alt text", () => {
-      const md = "![Alt text](image.png)";
-      const result = render(md);
-      // Terminal can't show images, should show something
-      expect(result.length).toBeGreaterThan(0);
+    test("renders markdown images through timg output", () => {
+      Bun.which = () => "/usr/bin/timg"
+      Bun.spawnSync = (() =>
+        createSpawnResult("FAKE IMAGE OUTPUT\n")) as unknown as typeof Bun.spawnSync
+
+      const md = "![Alt text](image.png)"
+      const result = render(md, {
+        sourceDir: "/tmp",
+        stdoutIsTTY: true,
+      })
+
+      expect(result).toContain("FAKE IMAGE OUTPUT")
+    })
+
+    test("falls back to readable text when stdout is not a tty", () => {
+      const md = "![Alt text](image.png)"
+      const result = render(md, {
+        sourceDir: "/tmp",
+        stdoutIsTTY: false,
+      })
+
+      expect(result).toContain("[image: Alt text]")
+      expect(result).toContain("source: image.png")
+    })
+
+    test("falls back for remote image urls", () => {
+      const md = "![Alt text](https://example.com/image.png)"
+      const result = render(md, {
+        sourceDir: "/tmp",
+        stdoutIsTTY: true,
+      })
+
+      expect(result).toContain("[image: Alt text]")
+      expect(result).toContain("source: https://example.com/image.png")
+    })
+
+    test("renders html img tags", () => {
+      Bun.which = () => "/usr/bin/timg"
+      Bun.spawnSync = (() =>
+        createSpawnResult("HTML IMAGE OUTPUT\n")) as unknown as typeof Bun.spawnSync
+
+      const md = '<img src="image.png" alt="Logo" title="Brand">'
+      const result = render(md, {
+        sourceDir: "/tmp",
+        stdoutIsTTY: true,
+      })
+
+      expect(result).toContain("HTML IMAGE OUTPUT")
+    })
+
+    test("preserves fallback title metadata", () => {
+      const md = '![Alt text](image.png "Brand")'
+      const result = render(md, {
+        sourceDir: "/tmp",
+        stdoutIsTTY: false,
+      })
+
+      expect(result).toContain("title: Brand")
     });
   });
 
