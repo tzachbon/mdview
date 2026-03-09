@@ -5,6 +5,13 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [1.2.2](https://github.com/tzachbon/mdview/compare/mdview-v1.2.1...mdview-v1.2.2) (2026-03-09)
+
+
+### Bug Fixes
+
+* correct release version reporting ([03eb729](https://github.com/tzachbon/mdview/commit/03eb7290c7f942eb09d2431871d73bdaa7528a2d))
+
 ## [1.2.1](https://github.com/tzachbon/mdview/compare/mdview-v1.2.0...mdview-v1.2.1) (2026-03-09)
 
 
