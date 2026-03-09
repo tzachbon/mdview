@@ -4,6 +4,7 @@
  */
 
 import type { PagingMode } from "./pager.js";
+import packageJson from "../package.json";
 
 /**
  * Error types for consistent error handling
@@ -38,8 +39,7 @@ function exitWithError(type: ErrorType, detail?: string): never {
   process.exit(1);
 }
 
-// Version is inlined for fast --version response
-const VERSION = "1.0.0";
+const VERSION = packageJson.version;
 
 const HELP = `
 mdview - Render Markdown in the terminal with Mermaid diagram support

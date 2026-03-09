@@ -51,8 +51,46 @@ Examples:
     curl -fsSL https://raw.githubusercontent.com/tzachbon/mdview/main/install.sh | sh -s -- -b ~/.local/bin
 
     # Install specific version
-    curl -fsSL https://raw.githubusercontent.com/tzachbon/mdview/main/install.sh | sh -s -- -v v1.0.0
+    curl -fsSL https://raw.githubusercontent.com/tzachbon/mdview/main/install.sh | sh -s -- -v 1.2.1
 EOF
+}
+
+normalize_version() {
+    local version="$1"
+
+    case "$version" in
+        "")
+            echo ""
+            ;;
+        ${BIN_NAME}-v*)
+            echo "$version"
+            ;;
+        v*)
+            echo "${BIN_NAME}-${version}"
+            ;;
+        [0-9]*)
+            echo "${BIN_NAME}-v${version}"
+            ;;
+        *)
+            echo "$version"
+            ;;
+    esac
+}
+
+display_version() {
+    local version="$1"
+
+    case "$version" in
+        ${BIN_NAME}-v*)
+            echo "${version#${BIN_NAME}-v}"
+            ;;
+        v*)
+            echo "${version#v}"
+            ;;
+        *)
+            echo "$version"
+            ;;
+    esac
 }
 
 detect_platform() {
@@ -166,6 +204,7 @@ install_binary() {
 
 verify_install() {
     local bin_dir="$1"
+    local expected_version="$2"
     local bin_path="${bin_dir}/${BIN_NAME}"
 
     if [ ! -x "$bin_path" ]; then
@@ -176,6 +215,19 @@ verify_install() {
     if "$bin_path" --version >/dev/null 2>&1; then
         local version=$("$bin_path" --version 2>&1)
         info "Successfully installed: ${version}"
+
+        if [ -n "$expected_version" ]; then
+            local expected_display_version
+            expected_display_version=$(display_version "$expected_version")
+
+            case "$version" in
+                *"v${expected_display_version}"*)
+                    ;;
+                *)
+                    warn "Installed binary version does not match requested release: expected ${expected_display_version}"
+                    ;;
+            esac
+        fi
     else
         warn "Binary installed but --version check failed. The binary may not be compatible with your system."
     fi
@@ -230,6 +282,7 @@ main() {
         info "Fetching latest version..."
         version=$(get_latest_version)
     fi
+    version=$(normalize_version "$version")
     info "Version: ${version}"
 
     # Create temp file for download
@@ -244,7 +297,7 @@ main() {
     install_binary "$tmp_file" "$bin_dir"
 
     # Verify
-    verify_install "$bin_dir"
+    verify_install "$bin_dir" "$version"
 
     echo ""
     info "Installation complete! Run 'mdview --help' to get started."

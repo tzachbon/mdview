@@ -2,6 +2,7 @@
  * Integration tests for CLI (index.ts)
  */
 import { describe, test, expect } from "bun:test";
+import packageJson from "../package.json";
 import { parseArgs, formatError, ErrorType, type ParsedArgs } from "./index";
 
 describe("formatError", () => {
@@ -446,7 +447,7 @@ describe("CLI integration", () => {
       const stdout = await new Response(proc.stdout).text();
 
       expect(exitCode).toBe(0);
-      expect(stdout).toContain("mdview v");
+      expect(stdout.trim()).toBe(`mdview v${packageJson.version}`);
     });
 
     test("-v shows version", async () => {
@@ -458,7 +459,7 @@ describe("CLI integration", () => {
       const stdout = await new Response(proc.stdout).text();
 
       expect(exitCode).toBe(0);
-      expect(stdout).toContain("mdview v");
+      expect(stdout.trim()).toBe(`mdview v${packageJson.version}`);
     });
   });
 
