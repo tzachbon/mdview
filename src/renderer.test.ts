@@ -266,6 +266,62 @@ graph TD
       // URL might be shown or hidden depending on terminal renderer
     });
 
+    test("renders links with bright cyan styling when color is forced", async () => {
+      const proc = Bun.spawn(
+        [
+          "bun",
+          "-e",
+          'import { render } from "./src/renderer.ts"; process.stdout.write(render("Check [Example](https://example.com)"));',
+        ],
+        {
+          cwd: process.cwd(),
+          env: {
+            ...process.env,
+            FORCE_COLOR: "1",
+          },
+          stdout: "pipe",
+          stderr: "pipe",
+        }
+      );
+      const exitCode = await proc.exited;
+      const stdout = await new Response(proc.stdout).text();
+      const stderr = await new Response(proc.stderr).text();
+
+      expect(exitCode).toBe(0);
+      expect(stderr).toBe("");
+      expect(stdout).toContain("\u001b[96m");
+      expect(stdout).not.toContain("\u001b[34m");
+    });
+
+    test("keeps link href underlined when color is forced", async () => {
+      const proc = Bun.spawn(
+        [
+          "bun",
+          "-e",
+          'import { render } from "./src/renderer.ts"; process.stdout.write(render("Check [Example](https://example.com)"));',
+        ],
+        {
+          cwd: process.cwd(),
+          env: {
+            ...process.env,
+            FORCE_COLOR: "1",
+          },
+          stdout: "pipe",
+          stderr: "pipe",
+        }
+      );
+      const exitCode = await proc.exited;
+      const stdout = await new Response(proc.stdout).text();
+      const stderr = await new Response(proc.stderr).text();
+
+      expect(exitCode).toBe(0);
+      expect(stderr).toBe("");
+      expect(stdout).toContain("Example");
+      expect(stdout).toContain("https://example.com");
+      expect(stdout).toContain("\u001b[4mhttps://example.com");
+      expect(stdout).toContain("\u001b[24m");
+    });
+
     test("renders images as alt text", () => {
       const md = "![Alt text](image.png)";
       const result = render(md);

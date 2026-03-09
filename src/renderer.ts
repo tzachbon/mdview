@@ -3,6 +3,7 @@
  * Uses marked + marked-terminal for styling, with pre-processing for mermaid blocks
  */
 
+import chalk from "chalk";
 import { marked, type MarkedExtension } from "marked";
 import { markedTerminal } from "marked-terminal";
 import { renderMermaid } from "./mermaid.js";
@@ -44,6 +45,8 @@ export function render(markdown: string, options?: RenderOptions): string {
   // Type assertion needed: marked-terminal v7 types don't match @types/marked-terminal v6
   marked.use(
     markedTerminal({
+      link: chalk.cyanBright,
+      href: chalk.cyanBright.underline,
       reflowText: true,
       width: terminalWidth,
     }) as MarkedExtension
