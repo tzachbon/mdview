@@ -135,6 +135,7 @@ Renders as:
 Supported diagram types:
 - Flowcharts (`graph`, `flowchart`)
 - Sequence diagrams (`sequenceDiagram`)
+- C4 diagrams (`C4Context`, `C4Container`, `C4Component`)
 
 ## Development
 
